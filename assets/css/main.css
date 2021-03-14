@@ -1,3 +1,9 @@
+/* Bootstrap extensions */
+.mt-6 { margin-top: 60px; }
+.mb-6 { margin-bottom: 60px; }
+.mr-6 { margin-right: 60px; }
+.ml-6 { margin-left: 60px; }
+
 .cropped {
     height: 200px;
     width: 300px;

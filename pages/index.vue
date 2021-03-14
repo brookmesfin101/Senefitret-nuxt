@@ -16,17 +16,17 @@
         Recent Articles
       </p>
       <div class="articles-container row">
-        <recent-article :thumbnail="'/images/IntroducedPlantsInEthiopia/Araucaria.jpg'" :title="'Introduced Plants in Ethiopia'" 
+        <RecentArticle :thumbnail="'/images/IntroducedPlantsInEthiopia/Araucaria.jpg'" :title="'Introduced Plants in Ethiopia'" 
                         :subtitle="'Images of plants introduced to Ethiopia.'" :crop="'-260px 0px 0px 0px'"/>
-        <recent-article :thumbnail="'/images/EndemicWildAnimals/AwashShewa.jpg'" :title="'Endemic Wild Animals'" 
+        <RecentArticle :thumbnail="'/images/EndemicWildAnimals/AwashShewa.jpg'" :title="'Endemic Wild Animals'" 
                         :subtitle="'Images of endemic and wild Animals of Ethiopia.'" :crop="'0px 0px 0px 0px'"/>
-        <recent-article :thumbnail="'/images/QueerPlantsEthiopia/QueerPlantPicture.jpg'" :title="'Queer Plants of Ethiopia'" 
+        <RecentArticle :thumbnail="'/images/QueerPlantsEthiopia/QueerPlantPicture.jpg'" :title="'Queer Plants of Ethiopia'" 
                         :subtitle="'Images of queer Ethiopian plants.'" :crop="'0px 0px 0px 0px'"/>
-        <recent-article :thumbnail="'/images/UsefulPlantsOfEthiopia/EnseteVentricosum.jpg'" :title="'Useful Plants of Ethiopia'" 
+        <RecentArticle :thumbnail="'/images/UsefulPlantsOfEthiopia/EnseteVentricosum.jpg'" :title="'Useful Plants of Ethiopia'" 
                         :subtitle="'Images of plants useful to the inhabitants of Ethiopia.'" :crop="'0px 0px 0px 0px'"/>
-        <recent-article :thumbnail="'/images/EndemicPlantsOfEthiopia/BidensMacroptera.jpg'" :title="'Endemic Plants of Ethiopia'" 
+        <RecentArticle :thumbnail="'/images/EndemicPlantsOfEthiopia/BidensMacroptera.jpg'" :title="'Endemic Plants of Ethiopia'" 
                         :subtitle="'I have included 4 endemic plants: Bidens macroptera, Echinops kebericho, Plectocephalus varians and Urtica simensis.'" :crop="'0px 0px 0px 0px'"/>
-        <recent-article :thumbnail="'/images/WildBirdsEthiopia/CormorantRiftValley.jpg'" :title="'Endemic and Wild Animals of Ethiopia'" 
+        <RecentArticle :thumbnail="'/images/WildBirdsEthiopia/CormorantRiftValley.jpg'" :title="'Endemic and Wild Animals of Ethiopia'" 
                         :subtitle="'Images of endemic and wild Animals of Ethiopia.'" :crop="'0px 0px 0px 0px'"/>
       </div>
     </section>
@@ -34,9 +34,7 @@
 </template>
 
 <script>
-import RecentArticle from '../components/RecentArticle.vue'
 export default {
-    components: { RecentArticle },
   
 }
 </script>
