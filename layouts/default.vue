@@ -2,7 +2,7 @@
   <div>
     <div class="container-fluid">
       <div class="row">
-        <transition name="sidebar">
+        <transition v-on:before-enter="beforeEnter" :name="(allowTransition) ? 'sidebar' : ''">
           <Sidebar v-show="showSidebar"/>                       
         </transition>
         <div class="col-10 mt-6">
@@ -31,9 +31,18 @@
 export default {
   data() {
     return {
-      showSidebar: true,
-      counter: 0
+      showSidebar: true, 
+      isMounted: false,
+      allowTransition: false    
     }    
+  },
+  methods : {
+    beforeEnter(){      
+      this.allowTransition = (this.isMounted) ? this.isMounted : !this.isMounted;
+    }
+  },
+  mounted(){
+    this.isMounted = true;
   }
 }
 </script>

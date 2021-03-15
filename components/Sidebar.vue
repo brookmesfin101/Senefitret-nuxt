@@ -1,5 +1,5 @@
 <template>
-  <div id="sidebar" class="col-2">
+  <div id="sidebar" class="col-2 full-height">
     <nav class="nav flex-column mt-4">
     <form class="form-inline my-2 my-lg-0">
         <input class="form-control mr-sm-2" type="text" placeholder="Search">
@@ -33,7 +33,7 @@
         <a class="text-dark" href="#"><small>Documentaries</small></a>              
     </li>
     <li class="nav-item pb-2 pt-2 text-uppercase">
-        <a class="text-dark" href="#"><small>Manuscripts</small></a>              
+        <a class="text-dark" href="/manuscripts"><small>Manuscripts</small></a>              
     </li>
 
     <li class="nav-item mt-4 mb-4">

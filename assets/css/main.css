@@ -4,6 +4,10 @@
 .mr-6 { margin-right: 60px; }
 .ml-6 { margin-left: 60px; }
 
+.pointer {
+    cursor: pointer;
+}
+
 .cropped {
     height: 200px;
     width: 300px;
@@ -21,4 +25,7 @@
 .title {
     font-family: 'Roboto Slab';
     font-weight: bold;
+}
+.full-height {
+    height: 100vh;
 }

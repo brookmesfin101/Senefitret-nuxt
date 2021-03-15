@@ -21,13 +21,13 @@
         <RecentArticle :thumbnail="'/images/EndemicWildAnimals/AwashShewa.jpg'" :title="'Endemic Wild Animals'" 
                         :subtitle="'Images of endemic and wild Animals of Ethiopia.'" :crop="'0px 0px 0px 0px'"/>
         <RecentArticle :thumbnail="'/images/QueerPlantsEthiopia/QueerPlantPicture.jpg'" :title="'Queer Plants of Ethiopia'" 
-                        :subtitle="'Images of queer Ethiopian plants.'" :crop="'0px 0px 0px 0px'"/>
+                        :subtitle="'Images of queer Ethiopian plants.'" :crop="'0px 0px 0px 0px'" :last-column="true"/>
         <RecentArticle :thumbnail="'/images/UsefulPlantsOfEthiopia/EnseteVentricosum.jpg'" :title="'Useful Plants of Ethiopia'" 
                         :subtitle="'Images of plants useful to the inhabitants of Ethiopia.'" :crop="'0px 0px 0px 0px'"/>
         <RecentArticle :thumbnail="'/images/EndemicPlantsOfEthiopia/BidensMacroptera.jpg'" :title="'Endemic Plants of Ethiopia'" 
                         :subtitle="'I have included 4 endemic plants: Bidens macroptera, Echinops kebericho, Plectocephalus varians and Urtica simensis.'" :crop="'0px 0px 0px 0px'"/>
         <RecentArticle :thumbnail="'/images/WildBirdsEthiopia/CormorantRiftValley.jpg'" :title="'Endemic and Wild Animals of Ethiopia'" 
-                        :subtitle="'Images of endemic and wild Animals of Ethiopia.'" :crop="'0px 0px 0px 0px'"/>
+                        :subtitle="'Images of endemic and wild Animals of Ethiopia.'" :crop="'0px 0px 0px 0px'" :last-column="true"/>
       </div>
     </section>
   </div>    
