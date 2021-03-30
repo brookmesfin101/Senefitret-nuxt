@@ -6,7 +6,7 @@
       <section class="ml-4">
           <p class="lead mt-5 font-weight-bold" v-html="title"></p>
           <p v-html="subtitle"></p>
-          <button type="button" v-on:click="$emit('openManuscript', title)" class="btn btn-outline-primary mt-2 mb-3">More</button>
+          <button type="button" v-on:click="$emit('openManuscript', {title, format})" class="btn btn-outline-primary mt-2 mb-3">More</button>
       </section>      
       <hr class="mb-4">
   </article>
@@ -22,7 +22,11 @@ export default {
         'lastcolumn': {
             type: Boolean,
             default: false
-        } 
+        },
+        'format': {
+            type: String,
+            default: "docx"
+        }
     }
 }
 </script>
