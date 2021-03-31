@@ -6,21 +6,7 @@ export default {
     // ],
     props: {
         page: Object,
-        scale: Number,
-        scrollTop : {
-            type: Number,
-            default: 0
-        },
-        clientHeight: {
-            type: Number,
-            default: 0
-        }
-    },
-    data() {
-        return { 
-            elementTop: 0,
-            elementHeight: 0
-        }
+        scale: Number
     },
     render(h) {        
         const {canvasAttrs: attrs} = this;
@@ -31,8 +17,7 @@ export default {
         this.viewport = this.page.getViewport({scale});
     },
     mounted() {
-        this.drawPage();
-        this.updateElementBounds();       
+        this.drawPage(); 
     },
     beforeDestroy(){
         this.destroyPage(this.page);
@@ -40,13 +25,7 @@ export default {
     watch: {
         page(page, oldPage){
             this.destroyPage(oldPage);
-        },
-        isElementVisible(isElementVisible) {
-            if (isElementVisible) this.drawPage();
-        },
-        scale: 'updateElementBounds',
-        scrollTop: 'updateElementBounds',
-        clientHeight: 'updateElementBounds',
+        }
     },
     computed: {
         canvasAttrs() {
@@ -61,18 +40,6 @@ export default {
                 style,
                 class: 'pdf-page',
             };
-        },
-        isElementVisible() {
-            const {elementTop, elementBottom, scrollTop, scrollBottom} = this;
-            if (!elementBottom) return;
-
-            return elementTop < scrollBottom && elementBottom > scrollTop;
-        },
-        elementBottom() {
-            return this.elementTop + this.elementHeight;
-        },
-        scrollBottom() {
-            return this.scrollTop + this.clientHeight;
         },
         canvasStyle() {
             const {width: actualSizeWidth, height: actualSizeHeight} = this.actualSizeViewport;
@@ -114,11 +81,6 @@ export default {
 
             this.renderTask.cancel();
             delete this.renderTask;
-        },
-        updateElementBounds() {
-            const {offsetTop, offsetHeight} = this.$el;
-            this.elementTop = offsetTop;
-            this.elementHeight = offsetHeight;
         }
     }
 }

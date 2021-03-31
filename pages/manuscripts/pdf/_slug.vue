@@ -1,5 +1,5 @@
 <template>
-    <article class="">
+    <article>
         <PDFDocument :url="url" :scale="2"/>
     </article>
 </template>
@@ -15,5 +15,8 @@ export default {
 </script>
 
 <style scoped>
-
+article {
+    height: 50vh;
+    margin-top: 50px;
+}
 </style>
