@@ -70,9 +70,10 @@
             }
         },
         async mounted(){
+            console.log(this.url);
             pdfjs.GlobalWorkerOptions.workerSrc = 'pdfjs-dist/es5/build/pdf.worker.min.js';  
             
-            this.pdf = await pdfjs.getDocument("/pdfs/Ethiopian Flora Project.pdf").promise;              
+            this.pdf = await pdfjs.getDocument(this.url).promise;              
         }
     }
 </script>

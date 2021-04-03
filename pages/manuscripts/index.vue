@@ -14,16 +14,12 @@
                         :subtitle="'አቶ ውብሸትን ለመጀመሪያ ጊዜ ያየኋቸው በልጅነቴ ጊዜ ነበር፣...'" :crop="'0px 0px 0px 0px'" v-on:openManuscript="openManuscript($event)"/>  
         <RecentArticle :thumbnail="'/images/ManuscriptPics/generic_flowers_pic_1.jpg'" :title="'Ethiopian Flora Project'" :format="'pdf'" 
                         :subtitle="'Starting with expierence that led the author to devote his life to botany, this article is an attempt to elucidate...'" :crop="'0px 0px 0px 0px'" v-on:openManuscript="openManuscript($event)"/> 
-        <!-- <RecentArticle :thumbnail="'/images/EndemicWildAnimals/AwashShewa.jpg'" :title="'Endemic Wild Animals'" 
-                        :subtitle="'Images of endemic and wild Animals of Ethiopia.'" :crop="'0px 0px 0px 0px'"/>
-        <RecentArticle :thumbnail="'/images/QueerPlantsEthiopia/QueerPlantPicture.jpg'" :title="'Queer Plants of Ethiopia'" 
-                        :subtitle="'Images of queer Ethiopian plants.'" :crop="'0px 0px 0px 0px'" :last-column="true"/>
-        <RecentArticle :thumbnail="'/images/UsefulPlantsOfEthiopia/EnseteVentricosum.jpg'" :title="'Useful Plants of Ethiopia'" 
-                        :subtitle="'Images of plants useful to the inhabitants of Ethiopia.'" :crop="'0px 0px 0px 0px'"/>
-        <RecentArticle :thumbnail="'/images/EndemicPlantsOfEthiopia/BidensMacroptera.jpg'" :title="'Endemic Plants of Ethiopia'" 
-                        :subtitle="'I have included 4 endemic plants: Bidens macroptera, Echinops kebericho, Plectocephalus varians and Urtica simensis.'" :crop="'0px 0px 0px 0px'"/>
-        <RecentArticle :thumbnail="'/images/WildBirdsEthiopia/CormorantRiftValley.jpg'" :title="'Endemic and Wild Animals of Ethiopia'" 
-                        :subtitle="'Images of endemic and wild Animals of Ethiopia.'" :crop="'0px 0px 0px 0px'" :last-column="true"/> -->
+        <RecentArticle :thumbnail="'/images/ManuscriptPics/FeelingsANarrative.jpg'" :title="'Feelings A Narrative'" :format="'pdf'" 
+                        :subtitle="'በቅርቡ አዲሱ የኢትዮዽያ ጠቅላይ ሚኒስትር ዶክተር አቢይ አህመድ በሚሌንየም አዳራሽ ተገኝተው ለተሰበሰበው...'" :crop="'0px 0px 0px 0px'" v-on:openManuscript="openManuscript($event)"/> 
+        <RecentArticle :thumbnail="'/images/ManuscriptPics/dna_image_1.jpg'" :title="'ITS Sequences and Phylogenetic Relationships in Bidens and Coreopsis'" :format="'pdf'" 
+                        :subtitle="'Sequences from the internal transcribed spacer region of nuclear ribosomal DNA (ITS) for 35 taxa of Coreopsis and 15 species of Bidens were used to hypothesize phylogenetic relationships within and between the two genera. Coreopsis is paraphyletic and Bid...'" :crop="'0px 0px 0px 0px'" v-on:openManuscript="openManuscript($event)"/> 
+        <RecentArticle :thumbnail="'/images/ManuscriptPics/poem_image_1.jpg'" :title="'Jan 25 1996 Poem'" :format="'pdf'" 
+                        :subtitle="'በቀይ ሽብር ያለቁትን ጓደኞቼን (አክሊሉ ህሩይ፣ ፍቅሩ ህሩይ፣ ዮሴፍ አበበ፣ መኮንን በላይ)...'" :crop="'10px 0px 0px 0px'" v-on:openManuscript="openManuscript($event)"/>       
       </div>
     </section>
 </template>
