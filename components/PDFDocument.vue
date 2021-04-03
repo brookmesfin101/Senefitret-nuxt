@@ -38,8 +38,7 @@
             async pdf(pdf){                
                 this.pages = [];
                 const promises = range(1, pdf.numPages + 1).
-                    map(number => pdf.getPage(number));
-                console.log(promises);
+                    map(number => pdf.getPage(number));                
 
                 Promise.all(promises).
                     then((pages) => {
@@ -69,8 +68,7 @@
                 this.currentPage = this.pages[this.pageNum - 1];                                
             }
         },
-        async mounted(){
-            console.log(this.url);
+        async mounted(){            
             pdfjs.GlobalWorkerOptions.workerSrc = 'pdfjs-dist/es5/build/pdf.worker.min.js';  
             
             this.pdf = await pdfjs.getDocument(this.url).promise;              
