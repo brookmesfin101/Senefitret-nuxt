@@ -13,6 +13,7 @@
     "@fortawesome/free-brands-svg-icons": "^5.15.2",
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
     "@nuxt/content": "^1.14.0",
+    "canvas": "^2.7.0",
     "core-js": "^3.8.3",
     "nuxt": "^2.14.12",
     "pdfjs-dist": "^2.6.347",
