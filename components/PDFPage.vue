@@ -12,16 +12,16 @@ export default {
         const {canvasAttrs: attrs} = this;
         return h('canvas', {attrs});
     },
-    created() {
-        var scale = this.scale;
-        this.viewport = this.page.getViewport({scale});
+    created() {        
+        var scale = this.scale;        
+        this.viewport = this.page.getViewport({scale});        
     },
     mounted() {
         this.drawPage(); 
     },
-    beforeDestroy(){
-        this.destroyPage(this.page);
-    },
+    // beforeDestroy(){
+    //     this.destroyPage(this.page);
+    // },
     watch: {
         page(page, oldPage){
             this.destroyPage(oldPage);
@@ -53,7 +53,7 @@ export default {
         }
     },
     methods: {
-        async drawPage() {            
+        async drawPage() {                 
             if (this.renderTask) return;
 
             const {viewport} = this;

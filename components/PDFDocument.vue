@@ -1,73 +1,73 @@
 <template>
     <div class="pdf-document">    
-        <button class="btn btn-primary">Next</button>
-        <button class="btn btn-primary">Previous</button>    
-        <PDFPage
-            v-for="page in pages"
-            v-bind="{page, scale}"
-            :key="page.pageNumber"
-        />
+        <div v-if="currentPage != null" class="row mb-4">
+            <div class="col-8">
+                <button @click="onPrevPage" class="btn mr-4" :class="[pageNum == 1 ? 'btn-secondary' : 'btn-primary']" :disabled="pageNum == 1">Previous</button>    
+                <p class="lead d-inline mr-4">{{pageNum + ' / ' + pdf.numPages}}</p>
+                <button @click="onNextPage" class="btn btn-primary" :class="[pageNum >= pdf.numPages ? 'btn-secondary' : 'btn-primary']" :disabled="pageNum >= pdf.numPages">Next</button>    
+            </div>                    
+        </div>
+        <div class="row">
+            <div v-if="currentPage != null" class="col-8"> 
+                <PDFPage                    
+                    v-bind="{page: currentPage, scale}"
+                    :key="pageNum"
+                />
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
     import * as pdfjs from 'pdfjs-dist/webpack';    
     import range from 'lodash/range';    
-    const BATCH_COUNT = 10;
-
-    function getPages(pdf, first, last) {
-        const allPages = range(first, last+1).map(number => pdf.getPage(number));
-        return Promise.all(allPages);
-    }
 
     export default {
         props: ['url', 'scale'],
         data() {
             return {
                 pdf: undefined,
-                pages: []
+                pages: [],
+                pageNum: 1,
+                pageRendering: false,
+                currentPage: undefined,
+                pageNumPending: null
             }
         },
         watch: {
             async pdf(pdf){                
                 this.pages = [];
-                const promises = range(1, pdf.numPages).
+                const promises = range(1, pdf.numPages + 1).
                     map(number => pdf.getPage(number));
+                console.log(promises);
 
                 Promise.all(promises).
-                    then(pages => (this.pages = pages));
+                    then((pages) => {
+                        this.pages = pages;                        
+                        this.currentPage = this.pages[0];
+                        this.pageNum = 1;
+                    });
             }     
         },
         methods: {
             pageCount() {
                 return this.pdf ? this.pdf.numPages : 0;
             },                        
-            renderPDF(page) {
-                var scale = 1.5;
-                var viewport = page.getViewport({ scale: scale, });
-
-                var canvas = document.getElementById('pdf-canvas');
-                var context = canvas.getContext('2d');
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
-
-                var renderContext = {
-                    canvasContext: context,
-                    viewport: viewport
-                };
+            onNextPage() {                    
+                if (this.pageNum >= this.pdf.numPages) {
+                    return;
+                }                
+                this.pageNum++;          
+                this.currentPage = this.pages[this.pageNum - 1];                                
             },
-            async getPDFDocTask(){
-                pdfjs.GlobalWorkerOptions.workerSrc = 'pdfjs-dist/es5/build/pdf.worker.min.js';  
-
-                const task = await pdfjs.getDocument("Ethiopian Flora Project.pdf");
-
-                task.promise.then((pdf) => {
-                    return pdf;
-                });
+            onPrevPage() {                
+                if (this.pageNum <= 1) {
+                    return;
+                }                                
+                this.pageNum--;                
+                
+                this.currentPage = this.pages[this.pageNum - 1];                                
             }
-        },
-        async created(){                                                
-    
         },
         async mounted(){
             pdfjs.GlobalWorkerOptions.workerSrc = 'pdfjs-dist/es5/build/pdf.worker.min.js';  
