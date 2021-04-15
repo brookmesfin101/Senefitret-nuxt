@@ -8,6 +8,15 @@
     cursor: pointer;
 }
 
+.section-header {
+    display: inline-block;
+    padding-top: 10px;
+    border-bottom: solid 5px #f56a6a; 
+}
+div.jumbotron {
+    border-radius: 0;
+}
+
 .cropped {
     height: 200px;
     width: 300px;
@@ -19,7 +28,10 @@
 .main-icon {
     color: #f56a6a;
 }
-#sidebar {
+.admin-nav-icon {
+    color: #cccccc;
+}
+.sidebar {
     background-color: rgb(245, 246, 247);
 }
 .title {
@@ -28,4 +40,9 @@
 }
 .full-height {
     height: 100vh;
+}
+
+/* Lists */
+li.list-group-item {
+    background-color: rgb(245, 246, 247);
 }
