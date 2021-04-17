@@ -20,7 +20,7 @@ export default {
 <style>
     .dashboard {
         height: 500px;
-        width: 80%;
+        width: 95%;
         position: relative;
         top: -40px;
         border-radius: 3px;

@@ -9,6 +9,8 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^27.0.0",
+    "@ckeditor/ckeditor5-vue2": "^1.0.5",
     "@fortawesome/fontawesome-svg-core": "^1.2.34",
     "@fortawesome/free-brands-svg-icons": "^5.15.2",
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
@@ -17,6 +19,7 @@
     "core-js": "^3.8.3",
     "nuxt": "^2.14.12",
     "pdfjs-dist": "^2.6.347",
+    "tiptap": "^1.32.2",
     "worker-loader": "^3.0.8"
   },
   "devDependencies": {
