@@ -7,13 +7,28 @@
             </div>            
         </div>
         <div class="dashboard bg-white ml-4">
+            <button @click="ListFiles" class="btn btn-primary">Read Files</button>
         </div>
     </div>  
 </template>
 
 <script>
 export default {
-    layout: 'admin'
+    layout: 'admin',
+    data(){
+        return {
+            pdfs : []
+        }
+    },
+    methods: {
+        ListFiles(){
+            this.$axios.get('api/list-pdfs')
+                .then((pdfs) => {
+                    this.pdfs = pdfs.data;
+                })
+                .catch(err => console.log(err));
+        }
+    }
 }
 </script>
 

@@ -1,3 +1,5 @@
+const bodyParser = require('body-parser');
+
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -39,6 +41,10 @@ export default {
     '@nuxtjs/fontawesome',
   ],
 
+  serverMiddleware: [    
+    { path: '/api', handler: '~/api/index.js' }
+  ],
+
   fontawesome: {
     icons: {
       solid: ["fas"],
@@ -48,7 +54,8 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    '@nuxt/content'
+    '@nuxt/content',
+    '@nuxtjs/axios'
   ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

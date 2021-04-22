@@ -20,6 +20,7 @@
                     <ul>
                         <li class="text-light"><a href="/admin/articles" class="text-light"><small>View Articles</small></a></li>
                         <li class="text-light"><a href="/admin/articles/write" class="text-light"><small>Write Article</small></a></li>
+                        <li class="text-light"><a href="/admin/articles/upload" class="text-light"><small>Upload Article</small></a></li>
                     </ul>
                 </li>                
             </ul>
