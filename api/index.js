@@ -3,6 +3,7 @@ const app = require('express')();
 const cors = require('cors');
 const multer = require('multer');
 const fs = require('fs');
+const fsPromises = fs.promises;
 
 app.use(bodyParser.json());
 app.use(cors());
@@ -26,18 +27,20 @@ const storage = multer.diskStorage({
     }
 });
 
-const listPDFS = () => {
-    var pdfs = [];
-    fs.readdir('./static/pdfs', (err, files) => {
-        for (var i = 0; i < files.length; i++) {
-            if (files[i].includes('.pdf')) {
-                pdfs.push(files[i]);
-                console.log(pdfs);
-            }
-        }
-    });
-    console.log(pdfs);
-    return pdfs;
+const getManuscript_PDFs = async() => {
+    try {
+        return await fsPromises.readdir('./static/pdfs');
+    } catch (err) {
+        console.error(err);
+    }    
+}
+
+const getManuscript_MDs = async() => {
+    try {
+        return await fsPromises.readdir('./content/manuscripts');
+    } catch (err) {
+        console.log(err);
+    }
 }
 
 const upload = multer({
@@ -48,9 +51,33 @@ app.post('/single-file', upload.single('file'), (req, res) => {
   res.json({ data: 'data' });
 });
 
-app.get('/list-pdfs', async (req, res) => {
-    var pdfs = listPDFS();
-    res.json({ pdfs });
+app.get('/list-pdfs', async (req, res) => {    
+    const manuscriptPDFs = await getManuscript_PDFs();
+    const manuscriptMDs = await getManuscript_MDs();    
+
+    let manuscripts = manuscriptPDFs.concat(manuscriptMDs);
+
+    let indexStartAt = 1000;
+
+    let manuscriptMarkdowns = manuscripts.map((val) => {
+        let name;
+        let ext;
+        if (String(val).includes(".md")){
+            var split = String(val).split(".md");
+            name = split[0];
+            ext = "md";
+        }
+        if (String(val).includes(".pdf")){
+            var split = String(val).split(".pdf");            
+            name = split[0];
+            ext = "pdf";
+        }
+        indexStartAt++;
+
+        return {name, type : "Manuscript", id : indexStartAt, ext};
+    });
+
+    res.json(manuscriptMarkdowns);
 });
 
 app.use((err, req, res, next) => {

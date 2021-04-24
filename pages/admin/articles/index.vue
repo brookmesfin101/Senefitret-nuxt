@@ -7,7 +7,31 @@
             </div>            
         </div>
         <div class="dashboard bg-white ml-4">
-            <button @click="ListFiles" class="btn btn-primary">Read Files</button>
+            <div class="row">
+                <div class="col-8">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                            <th scope="col"></th>
+                            <th scope="col"><strong>Name</strong> of Article</th>
+                            <th scope="col"><strong>Type</strong> of Article</th>
+                            <th scope="col"><strong>View</strong> Article</th>
+                            <th scope="col">File Extension</th>
+                            </tr>
+                        </thead>
+                    </table>
+
+
+                    <ul v-for="pdf in pdfs" :key="pdf.id" class="list-group">
+                        <li class="list-group-item">
+                            <font-awesome-icon :icon="['fas', 'file-pdf']" class="fa-fw"/>                            
+                            <p v-text="pdf.name"></p>
+                            <p v-text="pdf.type"></p>
+                            <p v-text="pdf.ext"></p>
+                        </li>
+                    </ul>
+                </div>
+            </div>                    
         </div>
     </div>  
 </template>
@@ -23,11 +47,14 @@ export default {
     methods: {
         ListFiles(){
             this.$axios.get('api/list-pdfs')
-                .then((pdfs) => {
+                .then((pdfs) => {                    
                     this.pdfs = pdfs.data;
                 })
                 .catch(err => console.log(err));
         }
+    },
+    mounted(){
+        this.ListFiles();
     }
 }
 </script>
