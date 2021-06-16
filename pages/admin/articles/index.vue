@@ -19,19 +19,41 @@
                             <th scope="col">File Extension</th>
                             </tr>
                         </thead>
-                    </table>
-
-
-                    <ul v-for="pdf in pdfs" :key="pdf.id" class="list-group">
-                        <li class="list-group-item">
-                            <font-awesome-icon :icon="['fas', 'file-pdf']" class="fa-fw"/>                            
-                            <p v-text="pdf.name"></p>
-                            <p v-text="pdf.type"></p>
-                            <p v-text="pdf.ext"></p>
-                        </li>
-                    </ul>
+                        <tr v-for="pdf in pdfs" :key="pdf.id">
+                            <th scope="row"><font-awesome-icon :icon="['fas', 'file-pdf']" class="fa-fw"/></th>
+                            <td v-text="pdf.name">Column content</td>
+                            <td v-text="pdf.type">Column content</td>
+                            <!-- <td><a :href="'/manuscripts/' + pdf.ext + '/' + pdf.name">View</a></td> -->
+                            <td><button type="button" @click="ViewArticle(pdf)" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#ArticleModal">View</button></td>
+                            <td v-text="pdf.ext">Column content</td>
+                        </tr>
+                    </table>                    
                 </div>
             </div>                    
+        </div>
+
+        <div class="modal fade" id="ArticleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{article.name}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div v-if="article && article.ext == 'pdf'">
+                        <LazyPDFDocument :url="'/pdfs/' + article.name" :scale="1" :key="article.name"/>
+                    </div>
+                    <div v-if="article && article.ext == 'md'">
+                        <nuxt-content :document="article.content"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>                    
+                </div>
+                </div>
+            </div>
         </div>
     </div>  
 </template>
@@ -41,7 +63,12 @@ export default {
     layout: 'admin',
     data(){
         return {
-            pdfs : []
+            pdfs : [],
+            article : {
+                ext: '',
+                name: '',
+                content: ''
+            }
         }
     },
     methods: {
@@ -51,6 +78,18 @@ export default {
                     this.pdfs = pdfs.data;
                 })
                 .catch(err => console.log(err));
+        },
+        async ViewArticle(article){
+            this.article.name = article.name + '.' + article.ext;   
+            this.article.ext = article.ext;     
+
+            if(article.ext == 'md'){
+                this.article.content = await this.$content(`manuscripts/${article.name}`).fetch();                
+            } else {
+
+            }
+               
+            $('#exampleModal').modal('show');
         }
     },
     mounted(){

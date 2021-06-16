@@ -11,7 +11,7 @@
             <div v-if="currentPage != null" class="col-8"> 
                 <PDFPage                    
                     v-bind="{page: currentPage, scale}"
-                    :key="pageNum"
+                    :key="generateKey(pageNum)"
                 />
             </div>
         </div>
@@ -42,11 +42,15 @@
 
                 Promise.all(promises).
                     then((pages) => {
-                        this.pages = pages;                        
-                        this.currentPage = this.pages[0];
-                        this.pageNum = 1;
+                        this.pages = pages;                                          
+                        this.currentPage = this.pages[0];                        
+                        this.pageNum = 1;                        
                     });
-            }     
+            },
+            async url(url){                
+                this.pdf = await pdfjs.getDocument(url).promise;                   
+                console.log(this.pdf);
+            }
         },
         methods: {
             pageCount() {
@@ -66,11 +70,14 @@
                 this.pageNum--;                
                 
                 this.currentPage = this.pages[this.pageNum - 1];                                
+            },
+            generateKey(num) {                                
+                return `${num}+${this.pdf._pdfInfo.fingerprint}`;
             }
         },
         async mounted(){            
             pdfjs.GlobalWorkerOptions.workerSrc = 'pdfjs-dist/es5/build/pdf.worker.min.js';  
-            
+                        
             this.pdf = await pdfjs.getDocument(this.url).promise;              
         }
     }

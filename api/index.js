@@ -1,5 +1,6 @@
 const bodyParser = require('body-parser');
 const app = require('express')();
+const path = require('path');
 const cors = require('cors');
 const multer = require('multer');
 const fs = require('fs');
@@ -8,19 +9,13 @@ const fsPromises = fs.promises;
 app.use(bodyParser.json());
 app.use(cors());
 
-const fileFilter = (req, file, cb) => {
-    const allowedTypes = ["pdf", "docx", "doc"];
-    if (!allowedTypes.includes(file.mimetype)){
-        const error = new Error("Incorrect file");
-        error.code = "INCORRECT_FILETYPE";
-        return cb(error, false)
-    }
-    cb(null, true);
-}
-
 const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, './static')
+    destination: function(req, file, cb) {        
+        if(String(file.mimetype).includes('application/pdf')){            
+            cb(null, './static/pdfs');
+        } else {            
+            cb(null, './static');
+        }
     },
     filename: function (req, file, cb) {
         cb(null, file.originalname)
@@ -44,12 +39,37 @@ const getManuscript_MDs = async() => {
 }
 
 const upload = multer({
-    storage : storage   
-})
+    storage : storage,
+    fileFilter: function (req, file, cb) {
+        var ext = path.extname(file.originalname);
+        
+        if(ext !== '.pdf') {
+            req.fileValidationError = 'wrong mimetype';
+            return cb(new Error('ONLY_PDFS'));
+        }
+        cb(null, true);
+    }
+}).single('file');
 
-app.post('/single-file', upload.single('file'), (req, res) => {
-  res.json({ data: 'data' });
+app.post('/single-file', (req, res) => {    
+  upload(req, res, (err) => {
+      if(err !== void 0){        
+        res.status(500).send('Error Uploading Single File');
+      } else {        
+        res.json('Success');
+      }
+  });
 });
+
+// app.post('/single-file', (req, res) => {
+//     upload(req, res, function(err) {
+//         console.log(req);
+//         if(req.fileValidationError){
+//             console.log(req.fileValidationError);
+//             return res.end(req.fileValidationError);
+//         }
+//     })
+// })
 
 app.get('/list-pdfs', async (req, res) => {    
     const manuscriptPDFs = await getManuscript_PDFs();
@@ -81,7 +101,8 @@ app.get('/list-pdfs', async (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-    if (err.code === "INCORRECT_FILETYPE") {
+    if (err.code === "ONLY_PDFS") {
+        console.log("INCORRECT_FILETYPE");
         res.status(422).json({ error: 'Only images are allowed' });
         return;
     }

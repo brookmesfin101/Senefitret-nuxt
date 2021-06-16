@@ -7,7 +7,7 @@
 <script>
 export default {
     async asyncData({ $content, params }) {           
-        const url = `/pdfs/${params.slug}.pdf`;
+        const url = `/pdfs/${params.slug}.pdf`;        
 
         return { url }
     }

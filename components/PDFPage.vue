@@ -1,9 +1,5 @@
-
 <script>
 export default {
-    // props: ['page', 'scale'
-    
-    // ],
     props: {
         page: Object,
         scale: Number
@@ -16,14 +12,12 @@ export default {
         var scale = this.scale;        
         this.viewport = this.page.getViewport({scale});        
     },
-    mounted() {
+    mounted() {   
+        console.log("PDFPage mounted");
         this.drawPage(); 
     },
-    // beforeDestroy(){
-    //     this.destroyPage(this.page);
-    // },
     watch: {
-        page(page, oldPage){
+        page(page, oldPage){            
             this.destroyPage(oldPage);
         }
     },
@@ -33,7 +27,7 @@ export default {
             [width, height] = [width, height].map(dim => Math.ceil(dim));
 
             const style = this.canvasStyle;
-            // debugger;
+
             return {
                 width,
                 height,
@@ -54,7 +48,10 @@ export default {
     },
     methods: {
         async drawPage() {                 
-            if (this.renderTask) return;
+            if (this.renderTask) {
+                console.log(1);
+                return;    
+            }
 
             const {viewport} = this;
             // debugger;
@@ -65,8 +62,11 @@ export default {
             // https://mozilla.github.io/pdf.js/api/draft/PDFPageProxy.html
             this.renderTask = await this.page.render(renderContext);
             
-            if(this.renderTask != null){
-                this.renderTask.promise.then(() => this.$emit('rendered', this.page));
+            if(this.renderTask != null){                
+                console.log(2);
+                this.renderTask.promise
+                    .then(() => this.$emit('rendered', this.page))
+                    .catch((reason) => console.log('stopped ' + reason));
             }            
         },
         destroyPage(page){
@@ -74,7 +74,9 @@ export default {
 
             page._destroy();
 
-            if(this.renderTask) this.renderTask.cancel();
+            if(this.renderTask) {                
+                this.renderTask.cancel();                
+            }
         },
         destroyRenderTask(){
             if(!this.renderTask) return;

@@ -14,6 +14,14 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+    ],
+    script : [
+      {
+        src: '/js/jquery.min.js',        
+      },
+      {
+        src: '/js/bootstrap.min.js'
+      }
     ]
   },
 
@@ -45,6 +53,10 @@ export default {
     { path: '/api', handler: '~/api/index.js' }
   ],
 
+  router: {
+    middleware: 'auth'
+  },
+
   fontawesome: {
     icons: {
       solid: ["fas"],
@@ -55,8 +67,32 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     '@nuxt/content',
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    '@nuxtjs/firebase'
   ],
+
+  firebase : {
+    config: {
+      apiKey: "AIzaSyCF-bGMaRvMG8H_nhILuwaMXiRKypzvCvQ",
+      authDomain: "senefitret.firebaseapp.com",
+      projectId: "senefitret",
+      storageBucket: "senefitret.appspot.com",
+      messagingSenderId: "318602691517",
+      appId: "1:318602691517:web:5bd2d81c7e951f9a27c8d4",
+      measurementId: "G-82RX60NHGM"
+    },
+    services: {
+      auth: {
+        persistence: 'local', // default
+        initialize: {          
+          onAuthStateChangedAction: 'onAuthStateChangedAction',
+          subscribeManually: false
+        },
+        ssr: false // default
+      },
+      firestore: true
+    }
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
