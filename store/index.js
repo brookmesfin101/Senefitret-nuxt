@@ -2,10 +2,7 @@ const actions = {
     onAuthStateChangedAction: function (state, { authUser, claims }) {        
         if (!authUser) {
             state.commit('SET_USER', null);
-            
-            this.$router.push(
-                { name: '/admin/auth/signin' }
-            );
+        
         } else {
           const { uid, email } = authUser;
           state.commit('SET_USER', {

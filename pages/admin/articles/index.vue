@@ -22,8 +22,7 @@
                         <tr v-for="pdf in pdfs" :key="pdf.id">
                             <th scope="row"><font-awesome-icon :icon="['fas', 'file-pdf']" class="fa-fw"/></th>
                             <td v-text="pdf.name">Column content</td>
-                            <td v-text="pdf.type">Column content</td>
-                            <!-- <td><a :href="'/manuscripts/' + pdf.ext + '/' + pdf.name">View</a></td> -->
+                            <td v-text="pdf.type">Column content</td>                            
                             <td><button type="button" @click="ViewArticle(pdf)" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#ArticleModal">View</button></td>
                             <td v-text="pdf.ext">Column content</td>
                         </tr>
@@ -42,10 +41,10 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div v-if="article && article.ext == 'pdf'">
+                    <div v-show="article && article.ext == 'pdf'">
                         <LazyPDFDocument :url="'/pdfs/' + article.name" :scale="1" :key="article.name"/>
                     </div>
-                    <div v-if="article && article.ext == 'md'">
+                    <div v-show="article && article.ext == 'md'">
                         <nuxt-content :document="article.content"/>
                     </div>
                 </div>
