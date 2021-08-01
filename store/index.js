@@ -21,7 +21,7 @@ const mutations = {
 
 const state = () => ({
     user: null
-})
+});
 
 const getters = {
     getUser(state) {
