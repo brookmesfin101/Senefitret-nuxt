@@ -5,9 +5,8 @@
         <AdminSidebar/>
         <div class="col-10 mt-6">
              <header class="site-header">
-                <p class="title">
-                  Senefitret.com
-                </p>  
+                <p class="title d-inline">Senefitret.com</p>  
+                <a class='float-right pr-5' @click='signOut'><strong>Sign Out</strong></a>
               </header>
               <Nuxt /> 
         </div>
@@ -18,10 +17,19 @@
 
 <script>
 export default {
-  
+  methods: {
+    signOut() {
+      this.$fire.auth.signOut()
+        .then(() => {
+          this.$nuxt.context.redirect('/');
+        });
+    }
+  }
 }
 </script>
 
-<style>
-
+<style scoped>
+  header.site-header > a.float-right:hover {    
+    cursor: pointer;
+  }
 </style>

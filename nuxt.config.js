@@ -56,7 +56,7 @@ export default {
   router: {
     middleware: 'auth'
   },
-
+  ssr: false,
   fontawesome: {
     icons: {
       solid: ["fas"],
