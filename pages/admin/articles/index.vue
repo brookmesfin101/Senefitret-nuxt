@@ -41,8 +41,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div v-show="article && article.ext == 'pdf'">
-                        <LazyPDFDocument :url="'/pdfs/' + article.name" :scale="1" :key="article.name"/>
+                    <div v-if="article && article.ext == 'pdf'">
+                        <PDFDocument :url="'/pdfs/' + article.name" :scale="1" :key="article.name"/>
                     </div>
                     <div v-show="article && article.ext == 'md'">
                         <nuxt-content :document="article.content"/>
@@ -73,7 +73,8 @@ export default {
     methods: {
         ListFiles(){
             this.$axios.get('api/list-pdfs')
-                .then((pdfs) => {                    
+                .then((pdfs) => {         
+                    
                     this.pdfs = pdfs.data;
                 })
                 .catch(err => console.log(err));
@@ -81,7 +82,7 @@ export default {
         async ViewArticle(article){
             this.article.name = article.name + '.' + article.ext;   
             this.article.ext = article.ext;     
-
+            
             if(article.ext == 'md'){
                 this.article.content = await this.$content(`manuscripts/${article.name}`).fetch();                
             } else {
@@ -98,8 +99,7 @@ export default {
 </script>
 
 <style>
-    .dashboard {
-        height: 500px;
+    .dashboard {        
         width: 95%;
         position: relative;
         top: -40px;

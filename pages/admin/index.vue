@@ -18,8 +18,7 @@ export default {
 </script>
 
 <style>
-    .dashboard {
-        height: 500px;
+    .dashboard {        
         width: 95%;
         position: relative;
         top: -40px;

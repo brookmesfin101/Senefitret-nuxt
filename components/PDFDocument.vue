@@ -75,10 +75,14 @@
                 return `${num}+${this.pdf._pdfInfo.fingerprint}`;
             }
         },
-        async mounted(){            
+        async mounted(){                              
             pdfjs.GlobalWorkerOptions.workerSrc = 'pdfjs-dist/es5/build/pdf.worker.min.js';  
-                        
-            this.pdf = await pdfjs.getDocument(this.url).promise;              
+            console.log(this.url);            
+            if(this.url != '/pdfs/'){                
+                this.pdf = await pdfjs.getDocument(this.url).promise;              
+            } else {
+                console.log('this.url is null');
+            }
         }
     }
 </script>

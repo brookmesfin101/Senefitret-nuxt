@@ -32,9 +32,20 @@ export default {
               window.location = window.location.href + "/md/" + e.title; 
             } else if(e.format == "pdf"){
               window.location = window.location.href + "/pdf/" + e.title; 
-            }
-                                 
+            }                                 
         }        
+    },
+    created(){
+        this.$fire.firestore.collection('manuscripts').get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+              console.log(doc.id, " => ", doc.data());
+            });
+          })
+          .catch(err => {
+            console.log(err);
+          });
     }
 }
 </script>

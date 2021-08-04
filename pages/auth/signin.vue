@@ -34,13 +34,21 @@ export default {
   methods: {
     signIn(){      
       this.$fire.auth.signInWithEmailAndPassword(this.login.username, this.login.password)
-        .then((res) => {
-          console.log(res);
-          this.$nuxt.context.redirect('/admin');
+        .then((res) => {          
+          this.updateCurrentUser(res.user);      
         })
         .catch((err) => {
           console.error(err);
         })
+    },
+    updateCurrentUser(user){
+      this.$fire.auth.updateCurrentUser(user)
+        .then(() => {
+          this.$nuxt.context.redirect('/admin');
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     }
   }
 }
