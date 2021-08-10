@@ -56,7 +56,7 @@ ul
 <body lang=EN-US style='word-wrap:break-word'>
 
 <div class="text-center mt-4">
-<img src="/images/ManuscriptPics/generic_ethiopia_landscape_1.jpg" width="400px">
+<img src="/images/manuscripts/generic_ethiopia_landscape_1.jpg" width="400px">
 </div>
 
 <div class=WordSection1>

@@ -16,7 +16,7 @@
 ወርቅአለማሁ</span></font></p>
 <p style="margin-bottom: 0.11in; line-height: 0.18in"><font face="Noto Sans Devanagari"><span lang="hi-IN">ነፍስ
 ይማር፣ መልካም ዕረፍት።</span></font></p>
-<p style="margin-bottom: 0.11in; line-height: 0.18in"><img src="/images/ManuscriptPics/Wubishet_Worq_Alemahu_html_dd77b29fd12ddb4d.gif" name="Image1" align="bottom" width="599" height="324" border="0"/>
+<p style="margin-bottom: 0.11in; line-height: 0.18in"><img src="/images/manuscripts/Wubishet_Worq_Alemahu_html_dd77b29fd12ddb4d.gif" name="Image1" align="bottom" width="599" height="324" border="0"/>
 </p>
 <p align="justify" style="margin-bottom: 0.11in; line-height: 0.18in">
 <font face="Noto Sans Devanagari"><span lang="hi-IN">አቶ ውብሸትን

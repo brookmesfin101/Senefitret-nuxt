@@ -7,6 +7,18 @@
             </div>            
         </div>
         <div class="dashboard bg-white ml-4">
+            <div class="form-inline pt-3 pb-3 pl-3">
+                <label for="exampleInputEmail1" class='mr-3'>Type of article</label>
+                <select @change="listFilesAsync()" v-model='viewArticleType' name='ArticleType' class="form-control">
+                    <option value='manuscripts'>Manuscripts</option>
+                    <option value='biologicalsciences'>Biological Sciences</option>
+                    <option value='sciencesociety'>Science and Society</option>
+                    <option value='history'>History</option>
+                    <option value='culture'>Culture</option>
+                    <option value='religionscience'>Religion and Science</option>                
+                </select>
+            </div>
+
             <div class="row">
                 <div class="col-8">
                     <table class="table table-hover">
@@ -21,10 +33,10 @@
                         </thead>
                         <tr v-for="pdf in pdfs" :key="pdf.id">
                             <th scope="row"><font-awesome-icon :icon="['fas', 'file-pdf']" class="fa-fw"/></th>
-                            <td v-text="pdf.name">Column content</td>
-                            <td v-text="pdf.type">Column content</td>                            
-                            <td><button type="button" @click="ViewArticle(pdf)" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#ArticleModal">View</button></td>
-                            <td v-text="pdf.ext">Column content</td>
+                            <td v-text="pdf.title">Column content</td>
+                            <td v-text="'manuscript'">Column content</td>                            
+                            <td><button type="button" @click="viewArticle(pdf)" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#ArticleModal">View</button></td>
+                            <td v-text="pdf.format">Column content</td>
                         </tr>
                     </table>                    
                 </div>
@@ -35,17 +47,17 @@
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">{{article.name}}</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">{{currentArticle.name}}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div v-if="article && article.ext == 'pdf'">
-                        <PDFDocument :url="'/pdfs/' + article.name" :scale="1" :key="article.name"/>
+                    <div v-if="currentArticle && currentArticle.format == 'pdf'">
+                        <PDFDocument :url="getPDFUrl()" :scale="1" :key="currentArticle.title"/>
                     </div>
-                    <div v-show="article && article.ext == 'md'">
-                        <nuxt-content :document="article.content"/>
+                    <div v-show="currentArticle && currentArticle.format == 'md'">
+                        <nuxt-content :document="currentArticle.content"/>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -63,37 +75,47 @@ export default {
     data(){
         return {
             pdfs : [],
-            article : {
-                ext: '',
-                name: '',
-                content: ''
-            }
+            currentArticle : {                
+                title: '',
+                content: '',
+                format: '',
+                filePath: ''
+            },
+            viewArticleType: 'manuscripts'
         }
     },
     methods: {
-        ListFiles(){
-            this.$axios.get('api/list-pdfs')
-                .then((pdfs) => {         
-                    
-                    this.pdfs = pdfs.data;
-                })
-                .catch(err => console.log(err));
+        getPDFUrl(){
+            return this.currentArticle.filePath.replace('./static', '');
         },
-        async ViewArticle(article){
-            this.article.name = article.name + '.' + article.ext;   
-            this.article.ext = article.ext;     
+        listFilesAsync(){            
+            this.$fire.firestore.collection(this.viewArticleType).get()
+                .then((querySnapshot) => {
+                    this.pdfs = [];
+                    querySnapshot.forEach((doc) => {                    
+                        this.pdfs.push(doc.data());                        
+                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        },
+        async viewArticle(file){                      
+            this.currentArticle.title = file.title;   
+            this.currentArticle.filePath = file.filePath;       
+            this.currentArticle.format = file.format;                 
             
-            if(article.ext == 'md'){
-                this.article.content = await this.$content(`manuscripts/${article.name}`).fetch();                
-            } else {
-
+            if(file.format == 'md'){
+                const ext = '.' + file.format;
+                const contentPath = file.filePath.replace(ext, '');
+                this.currentArticle.content = await this.$content(contentPath).fetch();                
             }
                
             $('#exampleModal').modal('show');
         }
     },
-    mounted(){
-        this.ListFiles();
+    mounted(){        
+        this.listFilesAsync();
     }
 }
 </script>

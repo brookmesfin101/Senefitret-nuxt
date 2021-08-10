@@ -53,7 +53,7 @@ the first month of the 13 months in the year. Each month is 30 days
 long except for the 13<sup>th</sup> month, which is 5 or 6 (in leap
 years) days long.</p>
 <p class="western text-center mt-4 mb-4" align="justify" style="margin-bottom: 0in; border: none; padding: 0in; line-height: 100%">
-<img src="/images/ManuscriptPics/Sep11Flowers.png" name="Image1" align="bottom" width="579" height="415" border="0"/>
+<img src="/images/manuscripts/Sep11Flowers.png" name="Image1" align="bottom" width="579" height="415" border="0"/>
 </p>
 <p class="western" align="justify" style="text-indent: 0.5in; margin-bottom: 0in; border: none; padding: 0in; line-height: 100%">
 To many people in the western world, Ethiopia is known for its

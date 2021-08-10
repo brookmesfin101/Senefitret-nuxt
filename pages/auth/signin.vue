@@ -43,13 +43,16 @@ export default {
     },
     updateCurrentUser(user){
       this.$fire.auth.updateCurrentUser(user)
-        .then(() => {
+        .then(() => {          
           this.$nuxt.context.redirect('/admin');
         })
         .catch((err) => {
           console.error(err);
         });
     }
+  },
+  created(){
+    console.log(this.$fire.auth);
   }
 }
 </script>

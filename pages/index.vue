@@ -16,7 +16,7 @@
         Recent Articles
       </p>
       <div class="articles-container row">
-        <RecentArticle :thumbnail="'/images/IntroducedPlantsInEthiopia/Araucaria.jpg'" :title="'Introduced Plants in Ethiopia'" 
+        <!-- <RecentArticle :thumbnail="'/images/IntroducedPlantsInEthiopia/Araucaria.jpg'" :title="'Introduced Plants in Ethiopia'" 
                         :subtitle="'Images of plants introduced to Ethiopia.'" :crop="'-260px 0px 0px 0px'"/>
         <RecentArticle :thumbnail="'/images/EndemicWildAnimals/AwashShewa.jpg'" :title="'Endemic Wild Animals'" 
                         :subtitle="'Images of endemic and wild Animals of Ethiopia.'" :crop="'0px 0px 0px 0px'"/>
@@ -27,7 +27,10 @@
         <RecentArticle :thumbnail="'/images/EndemicPlantsOfEthiopia/BidensMacroptera.jpg'" :title="'Endemic Plants of Ethiopia'" 
                         :subtitle="'I have included 4 endemic plants: Bidens macroptera, Echinops kebericho, Plectocephalus varians and Urtica simensis.'" :crop="'0px 0px 0px 0px'"/>
         <RecentArticle :thumbnail="'/images/WildBirdsEthiopia/CormorantRiftValley.jpg'" :title="'Endemic and Wild Animals of Ethiopia'" 
-                        :subtitle="'Images of endemic and wild Animals of Ethiopia.'" :crop="'0px 0px 0px 0px'" :last-column="true"/>
+                        :subtitle="'Images of endemic and wild Animals of Ethiopia.'" :crop="'0px 0px 0px 0px'" :last-column="true"/> -->
+
+        <RecentArticle v-for="(file, index) in manuscripts" :key='index' :thumbnail="file.thumbnailPath" :title="file.title" :format="file.format" 
+                        :subtitle="file.subtitle" v-on:openManuscript="openManuscript($event)" :last-column="index == manuscripts.length - 1"/>
       </div>
     </section>
   </div>    
@@ -35,7 +38,36 @@
 
 <script>
 export default {
-  
+    data(){
+        return {
+          manuscripts: []
+        };
+    },
+    methods: {
+        openManuscript(e) {        
+            console.log(window.location.href);
+            if(e.format == "md"){
+              window.location = window.location.href + "manuscripts/md/" + e.title; 
+            } else if(e.format == "pdf"){
+              window.location = window.location.href + "manuscripts/pdf/" + e.title; 
+            }                                 
+        },
+        listFilesAsync(){            
+            this.$fire.firestore.collection('manuscripts').get()
+                .then((querySnapshot) => {
+                    this.manuscripts = [];
+                    querySnapshot.forEach((doc) => {                    
+                        this.manuscripts.push(doc.data());                        
+                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
+    },
+    beforeMount(){
+      this.listFilesAsync();
+    }  
 }
 </script>
 

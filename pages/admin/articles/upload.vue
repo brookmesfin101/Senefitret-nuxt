@@ -30,20 +30,23 @@
                     <div class="form-group mt-4">
                         <label class="pr-4 lead">Type of Article</label>
                         <select v-model="upload.type" name='ArticleType' class="form-control mt-1 w-50">
-                            <option>Manuscript</option>
-                            <option>Biological Sciences</option>
-                            <option>Science and Society</option>
-                            <option>History</option>
-                            <option>Culture</option>
-                            <option>Religion and Science</option>                
+                            <option value='manuscripts'>Manuscript</option>
+                            <option value='biologicalsciences'>Biological Sciences</option>
+                            <option value='sciencesociety'>Science and Society</option>
+                            <option value='history'>History</option>
+                            <option value='culture'>Culture</option>
+                            <option value='religionscience'>Religion and Science</option>                
                         </select>
                     </div>
-                    <button class="btn btn-success mt-3" v-on:click="submitFile()" :disabled="submitDisabled">Submit</button>
+                    <button class="btn mt-3" v-on:click="submitFile()" :class='submitButtonColor' :disabled="submitDisabled">Submit</button>
                 </div>
                 <div class="col-6">
                     <div class='form-group mt-4'>
                         <label class='pr-4 lead'>Upload Article Image Thumbnail</label>
                         <input class="form-control mt-1 w-50" type="file" ref="image" id="image" v-on:change="handleImageUpload()">     
+                    </div>
+                    <div id='Thumbnail_Preview' class='mt-4'>
+                        <img :src='tempImagePath' class='w-75'>
                     </div>
                 </div>
             </div>            
@@ -58,25 +61,33 @@ export default {
         return {
             upload: {
                 file: '',
+                filePath: '',
+                fileExt: '',
                 title: '',
                 subtitle: '',
                 type: '',
                 image: '',
-                imagePath: ''
-            },
-            file: '',
+                imagePath: '', 
+                imageExt: ''               
+            },            
+            tempImagePath: '',
             submitDisabled: true,            
             showConfirmation: false,
             isSuccess: true,
         }
     },
+    computed: {
+        submitButtonColor(){
+            return this.submitDisabled ? 'btn-outline-dark' : 'btn-success';
+        }
+    },
     watch: {
         upload: {
-            handler(val){                
-                if(val.file != '' && val.file !== void 0 && val.image != '' && val.image !== void 0){                
-                    this.submitDisabled = false;                
-                } else {                
-                    this.submitDisabled = true;                
+            handler(val){      
+                if(this.validateUploadEntries(val)){
+                    this.submitDisabled = false;  
+                } else {
+                    this.submitDisabled = true; 
                 }
             },
             deep: true
@@ -86,36 +97,97 @@ export default {
       handleFileUpload(){
           this.upload.file = this.$refs.file.files[0];
       },
+      validateUploadEntries(upload){
+          if(upload.file && upload.title && upload.subtitle && upload.type && upload.image){
+              return true;
+          } else {
+              return false;
+          }
+      },
       handleImageUpload(){
           this.upload.image = this.$refs.image.files[0];
+            
+          var reader = new FileReader();
+          reader.onload = (e) => {              
+            this.tempImagePath = e.target.result;
+          }          
+          reader.readAsDataURL(this.upload.image);
       },
       submitFile(){
-          let formData = new FormData();          
+          let formData = new FormData();                
+                  
+          var renamedFile = this.renameFileBeforeSaving();     
+          var renamedImage = this.renameImageBeforeSaving();    
 
-          formData.append('file', this.upload.file);     
-          formData.append('thumbnail', this.upload.image);         
+          formData.append('file', renamedFile);     
+          formData.append('thumbnail', renamedImage);
 
-          this.$axios.post('api/upload/manuscript',
-                formData,
+          this.upload.filePath = `./static/pdfs/${this.upload.type}/${renamedFile.name}`;
+          this.upload.imagePath = `./static/images/${this.upload.type}/${renamedImage.name}`;                                    
+
+          this.$axios.post(`api/upload/${this.upload.type}`, formData,
             {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             }
-            ).then((res) => {                
+            ).then(() => {     
+                this.createDBEntry(renamedFile.name);
+
                 this.showConfirmation = true;
                 this.isSuccess = true;
                 setTimeout(() => {
                     this.showConfirmation = false;
                 }, 2000)
             })
-            .catch(() => {                
+            .catch((err) => {        
+                console.error(err);
                 this.showConfirmation = true;
                 this.isSuccess = false;
                 setTimeout(() => {
                     this.showConfirmation = false;
                 }, 2000)
             });
+      },
+      createDBEntry(fileName){
+
+          this.$fire.firestore.collection(this.upload.type).doc(fileName).set({
+              format: this.upload.fileExt,
+              title: this.upload.title,
+              subtitle: this.upload.subtitle,
+              thumbnailPath: this.upload.imagePath,
+              filePath: this.upload.filePath
+          })
+          .then((res) => {
+              console.log(res);
+          })
+          .catch((err) => {
+              console.log(err);
+          })
+      },
+      renameFileBeforeSaving(){
+          var file = this.upload.file;
+          this.upload.fileExt = this.upload.file.type.replace('application/', '');
+          var ext = '.' + this.upload.file.type.replace('application/', '');
+          
+          var newName = file.name.replace(ext, '').concat('_', new Date().getTime().toString(), ext);
+
+          var blob = file.slice(0, file.size, file.type); 
+          var newFile = new File([blob], newName, {type: file.type});
+
+          return newFile;
+      },
+      renameImageBeforeSaving(){
+          var image = this.upload.image;
+          this.upload.imageExt = this.upload.image.type.replace('image/', '');
+          var ext = '.' + this.upload.image.type.replace('image/', '');
+
+          var newName = image.name.replace(ext,'').concat('_', new Date().getTime().toString(), ext);
+
+          var blob = image.slice(0, image.size, image.type);
+          var newFile = new File([blob], newName, {type: image.type});
+
+          return newFile;
       }
     }
 }

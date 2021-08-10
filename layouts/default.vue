@@ -28,7 +28,10 @@
 </template>
 
 <script>
+import authMixin from "@/mixins/auth.mixin";
+
 export default {
+  mixins: [authMixin],
   data() {
     return {
       showSidebar: true, 

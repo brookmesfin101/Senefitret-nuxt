@@ -114,10 +114,10 @@ of the Society of Architectural Historians) </span></span></font></font><font fa
 </span></font>
 </p>
 <p align="justify" style="margin-bottom: 0.11in; line-height: 0.18in">
-<img src="/images/ManuscriptPics/Addis_Buildings/1950-1960_Addis_Buildings_html_5730831fdd892635.gif" name="Image1" align="bottom" width="446" height="327" border="0"/>
+<img src="/images/manuscripts/1950-1960_Addis_Buildings_html_5730831fdd892635.gif" name="Image1" align="bottom" width="446" height="327" border="0"/>
 </p>
 <p align="justify" style="margin-bottom: 0.11in; line-height: 0.18in">
-<img src="/images/ManuscriptPics/Addis_Buildings/1950-1960_Addis_Buildings_html_c5775975ce6afb4c.gif" name="Image2" align="bottom" width="450" height="300" border="0"/>
+<img src="/images/manuscripts/1950-1960_Addis_Buildings_html_c5775975ce6afb4c.gif" name="Image2" align="bottom" width="450" height="300" border="0"/>
 </p>
 <p lang="en" align="justify" style="margin-bottom: 0.11in; font-style: normal; font-weight: normal; line-height: 0.18in">
 <br/>
@@ -151,9 +151,9 @@ Building)</span></span></span></font></font><font face="Noto Sans Devanagari"><s
 </span></font><font face="Times New Roman, serif"><font size="2" style="font-size: 11pt"><span lang="en-US"><span style="font-style: normal"><span style="font-weight: normal">(</span></span></span></font></font><font face="Noto Sans Devanagari"><span lang="hi-IN">የሰራ፣
 ያሰራ</span></font><font face="Times New Roman, serif"><font size="2" style="font-size: 11pt"><span lang="en-US"><span style="font-style: normal"><span style="font-weight: normal">)
 </span></span></span></font></font><font face="Noto Sans Devanagari"><span lang="hi-IN">።
-<img src="/images/ManuscriptPics/Addis_Buildings/1950-1960_Addis_Buildings_html_9730946ea86bd67f.gif" name="Image3" align="bottom" width="599" height="274" border="0"/>
+<img src="/images/manuscripts/1950-1960_Addis_Buildings_html_9730946ea86bd67f.gif" name="Image3" align="bottom" width="599" height="274" border="0"/>
 </span></font></p>
-<p style="margin-bottom: 0.11in; line-height: 0.18in"><img src="/images/ManuscriptPics/Addis_Buildings/1950-1960_Addis_Buildings_html_b6d6621d358a8d53.gif" name="Image4" align="bottom" width="599" height="398" border="0"/>
+<p style="margin-bottom: 0.11in; line-height: 0.18in"><img src="/images/manuscripts/1950-1960_Addis_Buildings_html_b6d6621d358a8d53.gif" name="Image4" align="bottom" width="599" height="398" border="0"/>
 </p>
 <p style="margin-bottom: 0.11in; line-height: 0.18in"><font face="Ebrima, serif"><font size="2" style="font-size: 11pt"><span lang="en"><span style="font-style: normal"><span style="font-weight: normal">By
 VBzi - <a href="https://www.flickr.com/photos/12723749@N02/1856145352/">https://www.flickr.com/photos/12723749@N02/1856145352/</a>,
@@ -191,7 +191,7 @@ CC BY 2.0, <a href="https://commons.wikimedia.org/w/index.php?curid=7636456">htt
 ለማድረግ ነው ይላሉ።  </span></font>
 </p>
 <p align="justify" style="margin-bottom: 0.11in; line-height: 0.18in">
-<img src="/images/ManuscriptPics/Addis_Buildings/1950-1960_Addis_Buildings_html_59f3899b4d864fdb.gif" name="Image5" align="bottom" width="461" height="614" border="0"/>
+<img src="/images/manuscripts/1950-1960_Addis_Buildings_html_59f3899b4d864fdb.gif" name="Image5" align="bottom" width="461" height="614" border="0"/>
 </p>
 </div>
 </body>

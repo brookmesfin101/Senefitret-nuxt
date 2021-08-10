@@ -16,7 +16,10 @@
 </template>
 
 <script>
+import authMixin from "@/mixins/auth.mixin";
+
 export default {
+  mixins: [authMixin],
   methods: {
     signOut() {
       this.$fire.auth.signOut()
