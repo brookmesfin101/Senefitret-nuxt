@@ -15,19 +15,19 @@
         <a class="text-dark" href="/about"><small>About</small></a>               
     </li>
     <li class="nav-item pb-2 pt-2 border-bottom text-uppercase">
-        <a class="text-dark" href="#"><small>Biological Sciences</small></a>              
+        <a class="text-dark" href="/biologicalsciences"><small>Biological Sciences</small></a>              
     </li>
     <li class="nav-item pb-2 pt-2 border-bottom text-uppercase">
-        <a class="text-dark" href="#"><small>Science and Society</small></a>              
+        <a class="text-dark" href="/sciencesociety"><small>Science and Society</small></a>              
     </li>
     <li class="nav-item pb-2 pt-2 border-bottom text-uppercase">
-        <a class="text-dark" href="#"><small>History</small></a>              
+        <a class="text-dark" href="/history"><small>History</small></a>              
     </li>
     <li class="nav-item pb-2 pt-2 border-bottom text-uppercase">
-        <a class="text-dark" href="#"><small>Culture</small></a>              
+        <a class="text-dark" href="/culture"><small>Culture</small></a>              
     </li>
     <li class="nav-item pb-2 pt-2 border-bottom text-uppercase">
-        <a class="text-dark" href="#"><small>Religion and Science</small></a>              
+        <a class="text-dark" href="/religionscience"><small>Religion and Science</small></a>              
     </li>
     <li class="nav-item pb-2 pt-2 border-bottom text-uppercase">
         <a class="text-dark" href="#"><small>Documentaries</small></a>              

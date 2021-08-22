@@ -1,7 +1,7 @@
 <template>
   <article class="col-4" :class="{'border-right' : !lastcolumn}">    
       <div class="mt-4">          
-          <div class="cropped pointer" v-on:click="$emit('openManuscript', title)" :style="{ backgroundImage : `url(${thumbnail})`}"></div> 
+          <div class="cropped pointer" v-on:click="$emit('openManuscript', {title, format })" :style="{ backgroundImage : `url('${formattedThumbnail}')`}"></div>           
       </div>  
       <section class="ml-4">
           <p class="lead mt-5 font-weight-bold" v-html="title"></p>
@@ -26,6 +26,11 @@ export default {
         'format': {
             type: String,
             default: "docx"
+        }
+    },
+    computed:{
+        formattedThumbnail(){
+            return this.thumbnail.replace(' ', '%20');
         }
     }
 }

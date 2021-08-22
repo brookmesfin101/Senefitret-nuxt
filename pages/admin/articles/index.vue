@@ -92,8 +92,10 @@ export default {
             this.$fire.firestore.collection(this.viewArticleType).get()
                 .then((querySnapshot) => {
                     this.pdfs = [];
-                    querySnapshot.forEach((doc) => {                    
-                        this.pdfs.push(doc.data());                        
+                    querySnapshot.forEach((doc) => {  
+                        if(doc.data().test === void 0){
+                            this.pdfs.push(doc.data());                        
+                        }
                     });
                 })
                 .catch(err => {

@@ -12,7 +12,8 @@
                     <div class="form-group">     
                         <transition name="upload">
                             <div v-show="showConfirmation" class="alert w-50 pt-4" :class="[isSuccess ? 'alert-success' : 'alert-danger']">                
-                                <p class="lead">FILE UPLOADED MUST BE A <strong>PDF</strong></p>
+                                <p v-if='!isSuccess' class="lead">FILE UPLOADED MUST BE A <strong>PDF</strong></p>
+                                <p v-if='isSuccess' class="lead">FILE SUCCESSFULLY UPLOADED</p>
                             </div>
                         </transition>            
                         <label class="pr-4 lead">File to Upload</label>
@@ -122,8 +123,9 @@ export default {
           formData.append('file', renamedFile);     
           formData.append('thumbnail', renamedImage);
 
-          this.upload.filePath = `./static/pdfs/${this.upload.type}/${renamedFile.name}`;
-          this.upload.imagePath = `./static/images/${this.upload.type}/${renamedImage.name}`;                                    
+          this.upload.filePath = `/pdf/${this.upload.type}/${renamedFile.name}`;
+          this.upload.imagePath = `/images/${this.upload.type}/${renamedImage.name}`;  
+                                            
 
           this.$axios.post(`api/upload/${this.upload.type}`, formData,
             {
@@ -182,7 +184,7 @@ export default {
           this.upload.imageExt = this.upload.image.type.replace('image/', '');
           var ext = '.' + this.upload.image.type.replace('image/', '');
 
-          var newName = image.name.replace(ext,'').concat('_', new Date().getTime().toString(), ext);
+          var newName = image.name.replace(ext,'').concat('_', new Date().getTime().toString(), ext).replace(' ', '');          
 
           var blob = image.slice(0, image.size, image.type);
           var newFile = new File([blob], newName, {type: image.type});

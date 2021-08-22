@@ -16,19 +16,6 @@
         Recent Articles
       </p>
       <div class="articles-container row">
-        <!-- <RecentArticle :thumbnail="'/images/IntroducedPlantsInEthiopia/Araucaria.jpg'" :title="'Introduced Plants in Ethiopia'" 
-                        :subtitle="'Images of plants introduced to Ethiopia.'" :crop="'-260px 0px 0px 0px'"/>
-        <RecentArticle :thumbnail="'/images/EndemicWildAnimals/AwashShewa.jpg'" :title="'Endemic Wild Animals'" 
-                        :subtitle="'Images of endemic and wild Animals of Ethiopia.'" :crop="'0px 0px 0px 0px'"/>
-        <RecentArticle :thumbnail="'/images/QueerPlantsEthiopia/QueerPlantPicture.jpg'" :title="'Queer Plants of Ethiopia'" 
-                        :subtitle="'Images of queer Ethiopian plants.'" :crop="'0px 0px 0px 0px'" :last-column="true"/>
-        <RecentArticle :thumbnail="'/images/UsefulPlantsOfEthiopia/EnseteVentricosum.jpg'" :title="'Useful Plants of Ethiopia'" 
-                        :subtitle="'Images of plants useful to the inhabitants of Ethiopia.'" :crop="'0px 0px 0px 0px'"/>
-        <RecentArticle :thumbnail="'/images/EndemicPlantsOfEthiopia/BidensMacroptera.jpg'" :title="'Endemic Plants of Ethiopia'" 
-                        :subtitle="'I have included 4 endemic plants: Bidens macroptera, Echinops kebericho, Plectocephalus varians and Urtica simensis.'" :crop="'0px 0px 0px 0px'"/>
-        <RecentArticle :thumbnail="'/images/WildBirdsEthiopia/CormorantRiftValley.jpg'" :title="'Endemic and Wild Animals of Ethiopia'" 
-                        :subtitle="'Images of endemic and wild Animals of Ethiopia.'" :crop="'0px 0px 0px 0px'" :last-column="true"/> -->
-
         <RecentArticle v-for="(file, index) in manuscripts" :key='index' :thumbnail="file.thumbnailPath" :title="file.title" :format="file.format" 
                         :subtitle="file.subtitle" v-on:openManuscript="openManuscript($event)" :last-column="index == manuscripts.length - 1"/>
       </div>
