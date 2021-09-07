@@ -70,6 +70,12 @@ export default {
     '@nuxtjs/firebase'
   ],
 
+  axios : {
+    https: process.env.NODE_ENV == 'development' ? false : true
+  },
+  env: {
+    DEV : false
+  },
   firebase : {
     config: {
       apiKey: "AIzaSyCF-bGMaRvMG8H_nhILuwaMXiRKypzvCvQ",
