@@ -9,7 +9,7 @@ const fsPromises = fs.promises;
 app.use(bodyParser.json());
 
 const corsOptions = {
-    origin: 'http://localhost:3000',
+    origin: 'https://senefitret.com',
   };
 
 app.use(cors(corsOptions));
