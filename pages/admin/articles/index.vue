@@ -24,45 +24,74 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                            <th scope="col"></th>
-                            <th scope="col"><strong>Name</strong> of Article</th>
-                            <th scope="col"><strong>Type</strong> of Article</th>
-                            <th scope="col"><strong>View</strong> Article</th>
-                            <th scope="col">File Extension</th>
-                            </tr>
+                                <th scope="col"></th>
+                                <th scope="col"><strong>Name</strong> of Article</th>
+                                <th scope="col"><strong>Type</strong> of Article</th>
+                                <th scope="col"><strong>View</strong> Article</th>
+                                <th scope="col">File Extension</th>
+                                <th scope="col">Edit/Delete</th>
+                            </tr>                            
                         </thead>
-                        <tr v-for="pdf in pdfs" :key="pdf.id">
-                            <th scope="row"><font-awesome-icon :icon="['fas', 'file-pdf']" class="fa-fw"/></th>
-                            <td v-text="pdf.title">Column content</td>
-                            <td v-text="'manuscript'">Column content</td>                            
-                            <td><button type="button" @click="viewArticle(pdf)" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#ArticleModal">View</button></td>
-                            <td v-text="pdf.format">Column content</td>
-                        </tr>
+                        <tbody>
+                            <tr v-for="pdf in pdfs" :key="pdf.id">
+                                <th scope="row"><font-awesome-icon :icon="['fas', 'file-pdf']" class="fa-fw"/></th>
+                                <td v-text="pdf.title">Column content</td>
+                                <td v-text="'manuscript'">Column content</td>                            
+                                <td><button type="button" @click="viewArticle(pdf)" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#ArticleModal">View</button></td>
+                                <td v-text="pdf.format">Column content</td>
+                                <td>
+                                    <span class='edit' @click='editArticle(pdf)' data-toggle="modal" data-target="#EditModal"><font-awesome-icon :icon="['fas', 'edit']"/></span>
+                                    <span class='pl-1 pr-1'><strong>|</strong></span>
+                                    <span class='delete' @click='deleteArticle(pdf)'><font-awesome-icon :icon="['fas', 'trash-alt']"/></span>
+                                </td>
+                            </tr>
+                        </tbody>                        
                     </table>                    
                 </div>
             </div>                    
         </div>
 
+        <!-- Articles Modal -->
         <div class="modal fade" id="ArticleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">{{currentArticle.name}}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div v-if="currentArticle && currentArticle.format == 'pdf'">
-                        <PDFDocument :url="getPDFUrl()" :scale="1" :key="currentArticle.title"/>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">{{currentArticle.title}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
-                    <div v-show="currentArticle && currentArticle.format == 'md'">
-                        <nuxt-content :document="currentArticle.content"/>
+                    <div class="modal-body">
+                        <div v-if="currentArticle && currentArticle.format == 'pdf'">
+                            <PDFDocument :url="getPDFUrl()" :scale="1" :key="currentArticle.title"/>
+                        </div>
+                        <div v-show="currentArticle && currentArticle.format == 'md'">
+                            <nuxt-content :document="currentArticle.content"/>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>                    
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>                    
-                </div>
+            </div>
+        </div>
+
+        <!-- Edit Modal -->
+        <div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">{{currentArticle.title}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>                    
+                    </div>
                 </div>
             </div>
         </div>
@@ -79,7 +108,10 @@ export default {
                 title: '',
                 content: '',
                 format: '',
-                filePath: ''
+                filePath: '',
+                thumbnailPath: '',
+                subtitle: '',
+                id: ''
             },
             viewArticleType: 'manuscripts'
         }
@@ -102,18 +134,23 @@ export default {
                     console.log(err);
                 });
         },
+        deleteArticle(pdf){
+            console.log(pdf.id);
+        },
+        editArticle(pdf){
+            $('#exampleModal').modal('hide');
+        },
         async viewArticle(file){                      
             this.currentArticle.title = file.title;   
             this.currentArticle.filePath = file.filePath;       
-            this.currentArticle.format = file.format;                 
+            this.currentArticle.format = file.format;           
+            this.currentArticle.id = file.id;      
             
             if(file.format == 'md'){
                 const ext = '.' + file.format;
                 const contentPath = file.filePath.replace(ext, '');
                 this.currentArticle.content = await this.$content(contentPath).fetch();                
             }
-               
-            $('#exampleModal').modal('show');
         }
     },
     mounted(){        
@@ -129,5 +166,9 @@ export default {
         top: -40px;
         border-radius: 3px;
         box-shadow: 0px 0px 9px 1px #e6e6e6
+    }
+    .edit:hover, .delete:hover {
+        opacity: .5;
+        cursor: pointer;
     }
 </style>

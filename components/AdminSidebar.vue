@@ -1,5 +1,5 @@
 <template>
-  <div class="col-2 bg-primary full-height">
+  <div class="col-2 bg-primary sidebar">
         <div class="mt-4">
             <form class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-2" type="text" placeholder="Search">

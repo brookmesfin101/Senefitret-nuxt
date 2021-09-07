@@ -5,22 +5,18 @@
         <transition v-on:before-enter="beforeEnter" :name="(allowTransition) ? 'sidebar' : ''">
           <Sidebar v-show="showSidebar"/>                       
         </transition>
-        <div class="col-10 mt-6">
-          <div class="row">
-            <div class="col-1">
-              <div>
-                <font-awesome-icon v-on:click="showSidebar = !showSidebar" :icon="['fas', 'bars']" class="main-icon fa-2x mt-4 ml-4 mr-3 menu-toggle"/>
-              </div> 
-            </div>
-            <div class="col-11">
-              <header class="site-header">
-                <p class="title">
-                  Senefitret.com
-                </p>  
-              </header>
-              <Nuxt />
-            </div>
-          </div>                    
+        <div id='Main' class='col-xl-10 col-lg-9 col-md-9 mt-5 pl-0'>
+          <div class='ml-3'>
+            <div>
+              <font-awesome-icon v-on:click="showSidebar = !showSidebar" :icon="['fas', 'bars']" class="main-icon fa-2x mr-3 menu-toggle"/>
+            </div> 
+            <header class="site-header mt-3">
+              <p class="title">
+                Senefitret.com
+              </p>  
+            </header>
+            <Nuxt /> 
+          </div>                            
         </div>
       </div>      
     </div> 

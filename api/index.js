@@ -7,7 +7,12 @@ const fs = require('fs');
 const fsPromises = fs.promises;
 
 app.use(bodyParser.json());
-app.use(cors());
+
+const corsOptions = {
+    origin: 'http://localhost:3000',
+  };
+
+app.use(cors(corsOptions));
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {                   

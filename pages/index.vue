@@ -16,8 +16,8 @@
         Recent Articles
       </p>
       <div class="articles-container row">
-        <RecentArticle v-for="(file, index) in manuscripts" :key='index' :thumbnail="file.thumbnailPath" :title="file.title" :format="file.format" 
-                        :subtitle="file.subtitle" v-on:openManuscript="openManuscript($event)" :last-column="index == manuscripts.length - 1"/>
+        <RecentArticle v-for="(file, index) in articles" :key='index' :thumbnail="file.thumbnailPath" :title="file.title" :format="file.format" 
+                        :subtitle="file.subtitle" v-on:openManuscript="openManuscript($event)" :last-column="index == articles.length - 1"/>
       </div>
     </section>
   </div>    
@@ -27,7 +27,7 @@
 export default {
     data(){
         return {
-          manuscripts: []
+          articles: []
         };
     },
     methods: {
@@ -42,9 +42,9 @@ export default {
         listFilesAsync(){            
             this.$fire.firestore.collection('manuscripts').get()
                 .then((querySnapshot) => {
-                    this.manuscripts = [];
+                    this.articles = [];
                     querySnapshot.forEach((doc) => {                    
-                        this.manuscripts.push(doc.data());                        
+                        this.articles.push(doc.data());                        
                     });
                 })
                 .catch(err => {

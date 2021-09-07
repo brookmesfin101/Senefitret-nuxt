@@ -1,5 +1,5 @@
 <template>
-  <div class="col-2 full-height sidebar">
+  <div class="col-xl-2 col-lg-3 col-md-3 sidebar">
     <nav class="nav flex-column mt-4">
     <form class="form-inline my-2 my-lg-0">
         <input class="form-control mr-sm-2" type="text" placeholder="Search">
@@ -53,10 +53,10 @@
 
 <script>
 export default {
-
+    
 }
 </script>
 
-<style>
-
+<style scoped>
+    
 </style>

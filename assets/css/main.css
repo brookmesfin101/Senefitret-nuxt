@@ -17,6 +17,10 @@ div.jumbotron {
     border-radius: 0;
 }
 
+p, small {
+    font-family: 'Open Sans';
+}
+
 .cropped {
     height: 200px;
     width: 300px;
@@ -33,13 +37,11 @@ div.jumbotron {
 }
 .sidebar {
     background-color: rgb(245, 246, 247);
+    min-height: 100vh;
 }
 .title {
     font-family: 'Roboto Slab';
     font-weight: bold;
-}
-.full-height {
-    height: 100vh;
 }
 
 /* Lists */
