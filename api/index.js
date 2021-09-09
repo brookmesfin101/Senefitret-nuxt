@@ -131,6 +131,10 @@ app.post('/upload/history', (req, res) => {
     })
 });
 
+app.get('/test/connection', (req, res) => {
+    res.json(req.url);
+});
+
 app.get('/list-pdfs', async (req, res) => {    
     const manuscriptPDFs = await getManuscript_PDFs();
     const manuscriptMDs = await getManuscript_MDs();    

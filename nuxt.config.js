@@ -56,6 +56,7 @@ export default {
   router: {
     middleware: 'auth'
   },
+
   fontawesome: {
     icons: {
       solid: ["fas"],
@@ -71,7 +72,8 @@ export default {
   ],
 
   axios : {
-    https: process.env.NODE_ENV == 'development' ? false : true
+    https: process.env.NODE_ENV == 'development' ? false : true,
+    port: 8080
   },
   env: {
     DEV : false

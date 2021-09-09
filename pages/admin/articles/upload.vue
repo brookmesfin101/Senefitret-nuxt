@@ -5,8 +5,9 @@
                 <h3 class="mb-0">Upload Articles</h3>
                 <p class="mb-0">Senefitret > Admin > Articles > Upload</p>
             </div>            
-        </div>
+        </div>        
         <div class="dashboard bg-white ml-4 pt-5 pl-5 pb-5">
+            <button class='btn btn-primary' @click="testServerConnection">Test Connection</button>
             <div class='row'>
                 <div class="col-6">
                     <div class="form-group">     
@@ -190,6 +191,15 @@ export default {
           var newFile = new File([blob], newName, {type: image.type});
 
           return newFile;
+      },
+      testServerConnection(){
+          this.$axios.get('api/test/connection')
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
       }
     }
 }
