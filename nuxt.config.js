@@ -73,7 +73,7 @@ export default {
 
   axios : {
     https: process.env.NODE_ENV == 'development' ? false : true,
-    port: 8080
+    browserBaseURL: "/"
   },
   env: {
     DEV : false
