@@ -7,13 +7,13 @@
             </div>            
         </div>        
         <div class="dashboard bg-white ml-4 pt-5 pl-5 pb-5">
-            <button class='btn btn-primary' @click="testServerConnection">Test Connection</button>
+            <!-- <button class='btn btn-primary' @click="testServerConnection">Test Connection</button> -->
             <div class='row'>
                 <div class="col-6">
                     <div class="form-group">     
                         <transition name="upload">
                             <div v-show="showConfirmation" class="alert w-50 pt-4" :class="[isSuccess ? 'alert-success' : 'alert-danger']">                
-                                <p v-if='!isSuccess' class="lead">FILE UPLOADED MUST BE A <strong>PDF</strong></p>
+                                <p v-if='!isSuccess' class="lead" v-text="errorMessage"></p>
                                 <p v-if='isSuccess' class="lead">FILE SUCCESSFULLY UPLOADED</p>
                             </div>
                         </transition>            
@@ -43,8 +43,9 @@
                     <button class="btn mt-3" v-on:click="submitFile()" :class='submitButtonColor' :disabled="submitDisabled">Submit</button>
                 </div>
                 <div class="col-6">
-                    <div class='form-group mt-4'>
+                    <div class='form-group'>
                         <label class='pr-4 lead'>Upload Article Image Thumbnail</label>
+                        <p>Image file must be a PNG, JPG, JPEG or GIF format</p>
                         <input class="form-control mt-1 w-50" type="file" ref="image" id="image" v-on:change="handleImageUpload()">     
                     </div>
                     <div id='Thumbnail_Preview' class='mt-4'>
@@ -76,6 +77,7 @@ export default {
             submitDisabled: true,            
             showConfirmation: false,
             isSuccess: true,
+            errorMessage: ''
         }
     },
     computed: {
@@ -143,8 +145,9 @@ export default {
                     this.showConfirmation = false;
                 }, 2000)
             })
-            .catch((err) => {        
-                console.error(err);
+            .catch((err) => {     
+                this.errorMessage = err.response.data.error;
+                console.log(this.errorMessage);
                 this.showConfirmation = true;
                 this.isSuccess = false;
                 setTimeout(() => {

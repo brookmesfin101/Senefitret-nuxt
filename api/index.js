@@ -38,12 +38,22 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage : storage,
     fileFilter: function (req, file, cb) {
-        var ext = path.extname(file.originalname);
+        var mimeType = file.mimetype;        
 
-        if(['.pdf', '.jpg', '.png', '.jpeg'].indexOf(ext) < 0){
-            console.log('Before sending error, ext: ', ext, 'indexOfResult: ', ['.pdf', '.jpg', '.png', '.jpeg'].indexOf(ext) < 0);
-            req.fileValidationError = 'wrong mimetype';
-            return cb(new Error('ONLY_PDFS'));
+        if(['application/pdf', 'image/png', 'image/jpeg', 'image/gif'].indexOf(mimeType) < 0){
+            console.log("Error ocurred while trying to upload. Details below:");
+
+            console.log(file.fieldname);
+            console.log(file.originalname);
+            console.log(file.mimetype);
+            
+            if(file.fieldname == 'file'){
+                req.fileValidationError = 'Wrong article file mimetype.';
+                return cb(new Error('WRONG_ARTICLE_MIMETYPE'));
+            } else if (file.fieldname == 'thumbnail'){
+                req.fileValidationError = 'Wrong thumbnail file mimetype.';
+                return cb(new Error('WRONG_IMAGE_MIMETYPE'));
+            }            
         }
         cb(null, true);
     }
@@ -68,8 +78,17 @@ const getManuscript_MDs = async() => {
 app.post('/upload/manuscripts', (req, res) => {
     upload(req, res, (err) => {
         if(err !== void 0){
-            console.log('err is :', err);
-            res.status(500).send('Error Uploading Manuscript');
+            var errorText = '';
+            console.log('Error Uploading Manuscript');
+            console.log('Error is :', err);                        
+            
+            if (err.message === 'WRONG_ARTICLE_MIMETYPE') {                        
+                errorText = 'Article submitted was of the wrong filetype';               
+            } else if (err.message === 'WRONG_IMAGE_MIMETYPE') {
+                errorText = 'Thumbnail submitted was of the wrong filetype.';
+            }
+            
+            res.status(422).json({ error: errorText });        
         } else {
             res.json('Success');
         }
@@ -79,8 +98,17 @@ app.post('/upload/manuscripts', (req, res) => {
 app.post('/upload/biologicalsciences', (req, res) => {
     upload(req, res, (err) => {
         if(err !== void 0){
-            console.log('err is :', err);
-            res.status(500).send('Error Uploading Biological Science Document');
+            var errorText = '';
+            console.log('Error Uploading Biological Science Document');
+            console.log('Error is :', err);
+
+            if (err.message === 'WRONG_ARTICLE_MIMETYPE') {                        
+                errorText = 'Article submitted was of the wrong filetype';               
+            } else if (err.message === 'WRONG_IMAGE_MIMETYPE') {
+                errorText = 'Thumbnail submitted was of the wrong filetype.';
+            }
+            
+            res.status(422).json({ error: errorText });   
         } else {
             res.json('Success');
         }
@@ -90,8 +118,17 @@ app.post('/upload/biologicalsciences', (req, res) => {
 app.post('/upload/sciencesociety', (req, res) => {
     upload(req, res, (err) => {
         if(err !== void 0){
-            console.log('err is :', err);
-            res.status(500).send('Error Uploading Science Society Document');
+            var errorText = '';
+            console.log('Error Uploading Science Society Document');
+            console.log('Error is :', err);
+
+            if (err.message === 'WRONG_ARTICLE_MIMETYPE') {                        
+                errorText = 'Article submitted was of the wrong filetype';               
+            } else if (err.message === 'WRONG_IMAGE_MIMETYPE') {
+                errorText = 'Thumbnail submitted was of the wrong filetype.';
+            }
+            
+            res.status(422).json({ error: errorText });     
         } else {
             res.json('Success');
         }
@@ -101,8 +138,17 @@ app.post('/upload/sciencesociety', (req, res) => {
 app.post('/upload/religionscience', (req, res) => {
     upload(req, res, (err) => {
         if(err !== void 0){
-            console.log('err is :', err);
-            res.status(500).send('Error Uploading Religion Science Document');
+            var errorText = '';
+            console.log('Error Uploading Religion Science Document');
+            console.log('Error is :', err);                               
+
+            if (err.message === 'WRONG_ARTICLE_MIMETYPE') {                        
+                errorText = 'Article submitted was of the wrong filetype';               
+            } else if (err.message === 'WRONG_IMAGE_MIMETYPE') {
+                errorText = 'Thumbnail submitted was of the wrong filetype.';
+            }
+            
+            res.status(422).json({ error: errorText });     
         } else {
             res.json('Success');
         }
@@ -112,8 +158,17 @@ app.post('/upload/religionscience', (req, res) => {
 app.post('/upload/culture', (req, res) => {
     upload(req, res, (err) => {
         if(err !== void 0){
-            console.log('err is :', err);
-            res.status(500).send('Error Uploading Culture Document');
+            var errorText = '';
+            console.log('Error Uploading Culture Document');
+            console.log('Error is :', err);
+
+            if (err.message === 'WRONG_ARTICLE_MIMETYPE') {                        
+                errorText = 'Article submitted was of the wrong filetype';               
+            } else if (err.message === 'WRONG_IMAGE_MIMETYPE') {
+                errorText = 'Thumbnail submitted was of the wrong filetype.';
+            }
+            
+            res.status(422).json({ error: errorText });    
         } else {
             res.json('Success');
         }
@@ -123,8 +178,17 @@ app.post('/upload/culture', (req, res) => {
 app.post('/upload/history', (req, res) => {
     upload(req, res, (err) => {
         if(err !== void 0){
-            console.log('err is :', err);
-            res.status(500).send('Error Uploading History Document');
+            var errorText = '';
+            console.log('Error Uploading History Document');
+            console.log('Error is :', err);
+
+            if (err.message === 'WRONG_ARTICLE_MIMETYPE') {                        
+                errorText = 'Article submitted was of the wrong filetype';               
+            } else if (err.message === 'WRONG_IMAGE_MIMETYPE') {
+                errorText = 'Thumbnail submitted was of the wrong filetype.';
+            }
+            
+            res.status(422).json({ error: errorText });   
         } else {
             res.json('Success');
         }
@@ -162,13 +226,6 @@ app.get('/list-pdfs', async (req, res) => {
     });
 
     res.json(manuscriptMarkdowns);
-});
-
-app.use((err, req, res, next) => {
-    if (err.code === "ONLY_PDFS") {        
-        res.status(422).json({ error: 'One of the files submitted was of the wrong filetype' });
-        return;
-    }
 });
 
 module.exports = app;
