@@ -195,6 +195,11 @@ app.post('/upload/history', (req, res) => {
     })
 });
 
+app.delete('/delete/:type/:name', (req, res) => {
+    console.log(req.params.type);
+    console.log(req.params.name);    
+});
+
 app.get('/test/connection', (req, res) => {
     res.json(req.url);
 });

@@ -87,10 +87,26 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        
+                        <div class='form-group'>
+                            <label class='lead' for='ArticleTitle'>Title of Article</label>
+                            <input type='text' name='ArticleTitle' v-model='currentArticle.title' class='form-control mt- w-50'>
+                        </div>
+                        <div class='form-group'>
+                            <label class='lead' for='ArticleSubtitle'>Subtitle of Article</label>
+                            <input type='text' name='ArticleSubtitle' v-model='currentArticle.subtitle' class='form-control mt- w-100'>
+                        </div>
+                        <div class='form-group'>
+                        <label class='pr-4 lead'>Article Image Thumbnail</label>
+                            <p>Image file must be a PNG, JPG, JPEG or GIF format</p>
+                            <input class="form-control mt-1 w-50" type="file" ref="image" id="image" v-on:change="handleImageUpload()">     
+                        </div>
+                        <div id='Thumbnail_Preview' class='mt-4'>
+                            <img :src='thumbailPath'>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>                    
+                        <button type="button" class="btn btn-success" @click='updateArticle'>Save</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click='closeEditModal'>Close</button>                    
                     </div>
                 </div>
             </div>
@@ -111,14 +127,63 @@ export default {
                 filePath: '',
                 thumbnailPath: '',
                 subtitle: '',
-                id: ''
+                type: '',
+                id: '',
+                tempImageFile: null,
+                tempImageExt: '',
+                tempImagePath: ''
             },
-            viewArticleType: 'manuscripts'
+            viewArticleType: 'manuscripts'            
+        }
+    },
+    computed: {
+        thumbailPath(){
+            return this.currentArticle.tempImagePath || this.currentArticle.thumbnailPath;
         }
     },
     methods: {
+        closeEditModal(){
+            this.currentArticle.tempImageFile = null;
+            this.currentArticle.tempImagePath = '';
+            this.currentArticle.tempImageExt = '';
+        },
+        updateArticle(){
+            if(this.currentArticle.tempImagePath){
+                this.updateImage();
+            }
+        },
+        updateImage(){
+            let formData = new FormData();    
+            const renamedImageFile = this.renameImageBeforeSaving();
+
+            formData.append('thumbnail', renamedImageFile);
+
+            this.$axios.delete(`api/delete/${this.viewArticleType}/${renamedImageFile.name}`);
+            
+            // this.$axios.post(`api/upload/${this.viewArticleType}`, formData,
+            // {
+            //     headers: {
+            //         'Content-Type': 'multipart/form-data'
+            //     }
+            // }
+            // ).then(() => {     
+                
+            // })
+            // .catch((err) => {     
+                
+            // });
+        },
         getPDFUrl(){
             return this.currentArticle.filePath.replace('./static', '');
+        },
+        handleImageUpload(){
+          this.currentArticle.tempImageFile = this.$refs.image.files[0];
+            
+          var reader = new FileReader();
+          reader.onload = (e) => {              
+            this.currentArticle.tempImagePath = e.target.result;
+          }          
+          reader.readAsDataURL(this.currentArticle.tempImageFile);
         },
         listFilesAsync(){            
             this.$fire.firestore.collection(this.viewArticleType).get()
@@ -138,6 +203,12 @@ export default {
             console.log(pdf.id);
         },
         editArticle(pdf){
+            this.currentArticle.title = pdf.title;
+            this.currentArticle.subtitle = pdf.subtitle;
+            this.currentArticle.thumbnailPath = pdf.thumbnailPath;
+            this.currentArticle.id = pdf.id;
+            this.currentArticle.type = this.viewArticleType;
+            
             $('#exampleModal').modal('hide');
         },
         async viewArticle(file){                      
@@ -151,6 +222,23 @@ export default {
                 const contentPath = file.filePath.replace(ext, '');
                 this.currentArticle.content = await this.$content(contentPath).fetch();                
             }
+        },
+        renameImageBeforeSaving(){
+            if(this.currentArticle.tempImageFile){
+                var image = this.currentArticle.tempImageFile;
+                this.currentArticle.tempImageExt = this.currentArticle.tempImageFile.type.replace('image/', '');
+                var ext = '.' + this.currentArticle.tempImageFile.type.replace('image/', '');            
+
+                var newName = String(image.name).toLowerCase()
+                                    .replace(ext,'')
+                                    .concat('_', new Date().getTime().toString(), ext)
+                                    .replace(' ', '');                                                       
+
+                var blob = image.slice(0, image.size, image.type);
+                var newFile = new File([blob], newName, {type: image.type});
+            }
+            
+            return newFile || undefined;
         }
     },
     mounted(){        
@@ -170,5 +258,8 @@ export default {
     .edit:hover, .delete:hover {
         opacity: .5;
         cursor: pointer;
+    }
+    #Thumbnail_Preview > img {
+        width: 35%;
     }
 </style>
