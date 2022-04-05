@@ -35,6 +35,9 @@
     <li class="nav-item pb-2 pt-2 text-uppercase">
         <a class="text-dark" href="/manuscripts"><small>Manuscripts</small></a>              
     </li>
+    <li class="nav-item pb-2 pt-2 text-uppercase">
+        <a class="text-dark" href="/test"><small>Test</small></a> 
+    </li>
 
     <li class="nav-item mt-4 mb-4">
         <h4 class="section-header">Get In Touch</h4>
