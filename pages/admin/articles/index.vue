@@ -158,20 +158,18 @@ export default {
 
             formData.append('thumbnail', renamedImageFile);
 
-            this.$axios.delete(`api/delete/${this.viewArticleType}/${renamedImageFile.name}`);
-            
-            // this.$axios.post(`api/upload/${this.viewArticleType}`, formData,
-            // {
-            //     headers: {
-            //         'Content-Type': 'multipart/form-data'
-            //     }
-            // }
-            // ).then(() => {     
-                
-            // })
-            // .catch((err) => {     
-                
-            // });
+            this.$axios.post('api/delete/image', { thumbnailPath: this.currentArticle.thumbnailPath })
+                .then((res) => {
+                    console.log(res);
+
+                    return this.$axios.post(`api/upload/image/${this.viewArticleType}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });                    
+                })
+                .then((res) => {
+                    console.log(res);
+                })
+                .catch((err) => {
+                    console.log('Error during image replacement: ', err);
+                });
         },
         getPDFUrl(){
             return this.currentArticle.filePath.replace('./static', '');

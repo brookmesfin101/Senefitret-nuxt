@@ -35,6 +35,16 @@ const storage = multer.diskStorage({
     }
 });
 
+const imageStorage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        var imageType = req.params.type;
+
+        console.log('In image storage, imageType: ', imageType);
+
+        cb(null, `./static/images/${imageType}`);
+    }
+})
+
 const upload = multer({
     storage : storage,
     fileFilter: function (req, file, cb) {
@@ -57,7 +67,14 @@ const upload = multer({
         }
         cb(null, true);
     }
-}).fields([{ name: 'file', maxCount: 1 }, { name: 'thumbnail', maxCount: 1 }])
+}).fields([{ name: 'file', maxCount: 1 }, { name: 'thumbnail', maxCount: 1 }]);
+
+const uploadImage = multer({
+    storage : imageStorage,
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
+    }
+})
 
 const getManuscript_PDFs = async() => {
     try {
@@ -195,9 +212,40 @@ app.post('/upload/history', (req, res) => {
     })
 });
 
-app.delete('/delete/:type/:name', (req, res) => {
-    console.log(req.params.type);
-    console.log(req.params.name);    
+// app.post('/delete/image/:type/:name', (req, res) => {
+//     // try {
+//     //     fsPromises.unlink(`./static/images/`)
+//     // }
+//     console.log(req.params.type);
+//     console.log(req.params.name);    
+// });
+
+app.post('/delete/image', (req, res) => {
+    var originalThumbnailPath = `./static${req.body.thumbnailPath}`;    
+
+    fsPromises.unlink(originalThumbnailPath)
+        .then(() => {
+            res.json('Thumbnail successfully deleted');
+        })
+        .catch((err) => {
+            console.log('Error within deleteImage function: ', err);
+
+            res.json('Error during thumbnail deletion');
+        });
+});
+
+app.post('/upload/image/:type', (req, res) => {
+    console.log('within upload image, before upload, type: ', req.params.type);
+    uploadImage(req, res, (err) => {
+        if(err !== void 0){
+            console.log('Error uploading new image');
+            console.log('Error is :', err);
+
+            res.status(422).json({ error: err});
+        } else {
+            res.json('Success uploaded new thumbnail');
+        }
+    });
 });
 
 app.get('/test/connection', (req, res) => {
