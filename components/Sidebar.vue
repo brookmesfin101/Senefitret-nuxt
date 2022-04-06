@@ -35,7 +35,7 @@
     <li class="nav-item pb-2 pt-2 text-uppercase">
         <a class="text-dark" href="/manuscripts"><small>Manuscripts</small></a>              
     </li>
-    <li class="nav-item pb-2 pt-2 text-uppercase">
+    <li v-if="IsDevEnvironment" class="nav-item pb-2 pt-2 text-uppercase">
         <a class="text-dark" href="/test"><small>Test</small></a> 
     </li>
 
@@ -55,9 +55,13 @@
 </template>
 
 <script>
-export default {
-    
-}
+    export default {
+        computed: {
+            IsDevEnvironment(){
+                return process.env.DEV;
+            }
+        }
+    }
 </script>
 
 <style scoped>

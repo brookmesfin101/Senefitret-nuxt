@@ -11,6 +11,7 @@
                 <label for="exampleInputEmail1" class='mr-3'>Type of article</label>
                 <select @change="listFilesAsync()" v-model='viewArticleType' name='ArticleType' class="form-control">
                     <option value='manuscripts'>Manuscripts</option>
+                    <option v-if='isDevEnvironment' value='test'>Test</option>
                     <option value='biologicalsciences'>Biological Sciences</option>
                     <option value='sciencesociety'>Science and Society</option>
                     <option value='history'>History</option>
@@ -139,6 +140,9 @@ export default {
     computed: {
         thumbailPath(){
             return this.currentArticle.tempImagePath || this.currentArticle.thumbnailPath;
+        },
+        isDevEnvironment(){
+            return process.env.DEV;
         }
     },
     methods: {

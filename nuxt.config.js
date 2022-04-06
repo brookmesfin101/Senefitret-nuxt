@@ -76,7 +76,7 @@ export default {
     browserBaseURL: "/"
   },
   env: {
-    DEV : false
+    DEV : true
   },
   firebase : {
     config: {

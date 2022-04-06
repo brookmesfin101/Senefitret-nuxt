@@ -212,6 +212,26 @@ app.post('/upload/history', (req, res) => {
     })
 });
 
+app.post('/upload/test', (req, res) => {
+    upload(req, res, (err) => {
+        if(err !== void 0){
+            var errorText = '';
+            console.log('Error Uploading Test Document');
+            console.log('Error is :', err);
+
+            if (err.message === 'WRONG_ARTICLE_MIMETYPE') {                        
+                errorText = 'Article submitted was of the wrong filetype';               
+            } else if (err.message === 'WRONG_IMAGE_MIMETYPE') {
+                errorText = 'Thumbnail submitted was of the wrong filetype.';
+            }
+            
+            res.status(422).json({ error: errorText });   
+        } else {
+            res.json('Success');
+        }
+    })
+});
+
 // app.post('/delete/image/:type/:name', (req, res) => {
 //     // try {
 //     //     fsPromises.unlink(`./static/images/`)

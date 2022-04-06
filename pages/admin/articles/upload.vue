@@ -31,13 +31,14 @@
                     </div>
                     <div class="form-group mt-4">
                         <label class="pr-4 lead">Type of Article</label>
-                        <select v-model="upload.type" name='ArticleType' class="form-control mt-1 w-50">
+                        <select v-model="upload.type" name='ArticleType' class="form-control mt-1 w-50">                    
                             <option value='manuscripts'>Manuscript</option>
+                            <option v-if='isDevEnvironment' value='test'>Test</option>
                             <option value='biologicalsciences'>Biological Sciences</option>
                             <option value='sciencesociety'>Science and Society</option>
                             <option value='history'>History</option>
                             <option value='culture'>Culture</option>
-                            <option value='religionscience'>Religion and Science</option>                
+                            <option value='religionscience'>Religion and Science</option>                                            
                         </select>
                     </div>
                     <button class="btn mt-3" v-on:click="submitFile()" :class='submitButtonColor' :disabled="submitDisabled">Submit</button>
@@ -83,6 +84,9 @@ export default {
     computed: {
         submitButtonColor(){
             return this.submitDisabled ? 'btn-outline-dark' : 'btn-success';
+        },
+        isDevEnvironment(){
+            return process.env.DEV;
         }
     },
     watch: {
