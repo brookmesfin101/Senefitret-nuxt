@@ -121,7 +121,8 @@ export default {
     data(){
         return {
             pdfs : [],
-            currentArticle : {                
+            currentArticle : {    
+                name: '',            
                 title: '',
                 content: '',
                 format: '',
@@ -162,6 +163,8 @@ export default {
 
             formData.append('thumbnail', renamedImageFile);
 
+            console.log(renamedImageFile);
+
             this.$axios.post('api/delete/image', { thumbnailPath: this.currentArticle.thumbnailPath })
                 .then((res) => {
                     console.log(res);
@@ -169,17 +172,21 @@ export default {
                     return this.$axios.post(`api/upload/image/${this.viewArticleType}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });                    
                 })
                 .then((res) => {
-                    console.log(res);
+                    this.currentArticle.thumbnailPath = `/images/${this.viewArticleType}/${renamedImageFile.name}`;     
+                    
+                    this.pushArticleChanges();
                 })
                 .catch((err) => {
                     console.log('Error during image replacement: ', err);
                 });
         },
         getPDFUrl(){
-            return this.currentArticle.filePath.replace('./static', '');
+            return this.currentArticle.filePath.replace('./static', '').replace('/pdf/', '/pdfs/');
         },
         handleImageUpload(){
           this.currentArticle.tempImageFile = this.$refs.image.files[0];
+
+          console.log(this.currentArticle.tempImageFile);
             
           var reader = new FileReader();
           reader.onload = (e) => {              
@@ -187,13 +194,31 @@ export default {
           }          
           reader.readAsDataURL(this.currentArticle.tempImageFile);
         },
+        pushArticleChanges(){
+            var fileName = this.currentArticle.filePath.replace(`/pdf/${this.viewArticleType}/`, '');
+
+            this.$fire.firestore.collection(this.viewArticleType).doc(fileName).set({
+                title: this.currentArticle.title,
+                subtitle: this.currentArticle.subtitle,
+                thumbnailPath: this.currentArticle.thumbnailPath
+            })
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+        },
         listFilesAsync(){            
             this.$fire.firestore.collection(this.viewArticleType).get()
                 .then((querySnapshot) => {
                     this.pdfs = [];
                     querySnapshot.forEach((doc) => {  
                         if(doc.data().test === void 0){
-                            this.pdfs.push(doc.data());                        
+                            const item = doc.data();
+                            item["name"] = doc.id;
+
+                            this.pdfs.push(item);           
                         }
                     });
                 })
@@ -205,6 +230,7 @@ export default {
             console.log(pdf.id);
         },
         editArticle(pdf){
+            this.currentArticle.name = pdf.name;
             this.currentArticle.title = pdf.title;
             this.currentArticle.subtitle = pdf.subtitle;
             this.currentArticle.thumbnailPath = pdf.thumbnailPath;

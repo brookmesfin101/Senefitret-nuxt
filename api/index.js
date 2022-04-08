@@ -42,6 +42,9 @@ const imageStorage = multer.diskStorage({
         console.log('In image storage, imageType: ', imageType);
 
         cb(null, `./static/images/${imageType}`);
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
     }
 })
 
@@ -70,11 +73,8 @@ const upload = multer({
 }).fields([{ name: 'file', maxCount: 1 }, { name: 'thumbnail', maxCount: 1 }]);
 
 const uploadImage = multer({
-    storage : imageStorage,
-    filename: function (req, file, cb) {
-        cb(null, file.originalname);
-    }
-})
+    storage : imageStorage
+}).fields([{ name: 'thumbnail', maxCount: 1 }]);
 
 const getManuscript_PDFs = async() => {
     try {
