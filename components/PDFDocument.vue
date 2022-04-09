@@ -77,8 +77,9 @@
         },
         async mounted(){                              
             pdfjs.GlobalWorkerOptions.workerSrc = 'pdfjs-dist/es5/build/pdf.worker.min.js';  
-            console.log(this.url);            
+                     
             if(this.url != '/pdfs/'){                
+                debugger;
                 this.pdf = await pdfjs.getDocument(this.url).promise;              
             } else {
                 console.log('this.url is null');

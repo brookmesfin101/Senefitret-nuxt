@@ -103,6 +103,12 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    transpile: ['pdfjs-dist']    
+    transpile: ['pdfjs-dist'],
+    extend(config) {
+      config.module.rules.push({
+        test: /\.pdf$/,
+        loader: "file-loader"
+      });
+    }   
   }
 }

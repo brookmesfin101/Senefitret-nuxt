@@ -64,7 +64,7 @@
                     </div>
                     <div class="modal-body">
                         <div v-if="currentArticle && currentArticle.format == 'pdf'">
-                            <PDFDocument :url="getPDFUrl()" :scale="1" :key="currentArticle.title"/>
+                            <PDFDocument :url="getPDFUrl()" :scale="1" :key="currentArticle.title"/>                            
                         </div>
                         <div v-show="currentArticle && currentArticle.format == 'md'">
                             <nuxt-content :document="currentArticle.content"/>
@@ -116,163 +116,166 @@
 </template>
 
 <script>
-export default {
-    layout: 'admin',
-    data(){
-        return {
-            pdfs : [],
-            currentArticle : {    
-                name: '',            
-                title: '',
-                content: '',
-                format: '',
-                filePath: '',
-                thumbnailPath: '',
-                subtitle: '',
-                type: '',
-                id: '',
-                tempImageFile: null,
-                tempImageExt: '',
-                tempImagePath: ''
-            },
-            viewArticleType: 'manuscripts'            
-        }
-    },
-    computed: {
-        thumbailPath(){
-            return this.currentArticle.tempImagePath || this.currentArticle.thumbnailPath;
-        },
-        isDevEnvironment(){
-            return process.env.DEV;
-        }
-    },
-    methods: {
-        closeEditModal(){
-            this.currentArticle.tempImageFile = null;
-            this.currentArticle.tempImagePath = '';
-            this.currentArticle.tempImageExt = '';
-        },
-        updateArticle(){
-            if(this.currentArticle.tempImagePath){
-                this.updateImage();
+    export default {
+        layout: 'admin',
+        data(){
+            return {
+                pdfs : [],
+                currentArticle : {    
+                    name: '',            
+                    title: '',
+                    content: '',
+                    format: '',
+                    filePath: '',
+                    thumbnailPath: '',
+                    subtitle: '',
+                    type: '',
+                    id: '',
+                    tempImageFile: null,
+                    tempImageExt: '',
+                    tempImagePath: ''
+                },
+                viewArticleType: 'manuscripts'            
             }
         },
-        updateImage(){
-            let formData = new FormData();    
-            const renamedImageFile = this.renameImageBeforeSaving();
+        computed: {
+            thumbailPath(){
+                return this.currentArticle.tempImagePath || this.currentArticle.thumbnailPath;
+            },
+            isDevEnvironment(){
+                return process.env.DEV;
+            }
+        },
+        methods: {
+            closeEditModal(){
+                this.currentArticle.tempImageFile = null;
+                this.currentArticle.tempImagePath = '';
+                this.currentArticle.tempImageExt = '';
+            },
+            editArticle(pdf){
+                // this.currentArticle.name = pdf.name;
+                this.currentArticle.title = pdf.title;
+                this.currentArticle.subtitle = pdf.subtitle;
+                this.currentArticle.thumbnailPath = pdf.thumbnailPath;
+                this.currentArticle.id = pdf.id;
+                this.currentArticle.format = pdf.format;
 
-            formData.append('thumbnail', renamedImageFile);
+                this.currentArticle.type = this.viewArticleType;
+                
+                $('#exampleModal').modal('hide');
+            },
+            async viewArticle(file){        
+                console.log("View Article: " + file);
+                this.currentArticle.title = file.title;   
+                this.currentArticle.filePath = file.filePath;       
+                this.currentArticle.format = file.format;           
+                this.currentArticle.id = file.id;      
+                
+                if(file.format == 'md'){
+                    const ext = '.' + file.format;
+                    const contentPath = file.filePath.replace(ext, '');
+                    this.currentArticle.content = await this.$content(contentPath).fetch();                
+                }
+            },
+            updateArticle(){
+                if(this.currentArticle.tempImagePath){
+                    this.updateImage();
+                }
+            },
+            // renames newly uploaded image -> deletes old image -> uploads new image -> pushes naming and image changes to firestore
+            updateImage(){
+                let formData = new FormData();    
+                const renamedImageFile = this.renameImageBeforeSaving();
 
-            console.log(renamedImageFile);
+                formData.append('thumbnail', renamedImageFile);
 
-            this.$axios.post('api/delete/image', { thumbnailPath: this.currentArticle.thumbnailPath })
-                .then((res) => {
-                    console.log(res);
+                this.$axios.post('api/delete/image', { thumbnailPath: this.currentArticle.thumbnailPath })
+                    .then(() => {
+                        return this.$axios.post(`api/upload/image/${this.viewArticleType}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });                    
+                    })
+                    .then(() => {
+                        this.currentArticle.thumbnailPath = `/images/${this.viewArticleType}/${renamedImageFile.name}`;     
+                        
+                        this.pushArticleChanges();
+                    })
+                    .catch((err) => {
+                        console.log('Error during image replacement: ', err);
+                    });
+            },
+            getPDFUrl(){
+                return this.currentArticle.filePath.replace('./static', '').replace('/pdf/', '/pdfs/');
+            },
+            // update temporary image path and show new image on screen
+            handleImageUpload(){
+                this.currentArticle.tempImageFile = this.$refs.image.files[0];                
+                    
+                var reader = new FileReader();
+                reader.onload = (e) => {              
+                    this.currentArticle.tempImagePath = e.target.result;
+                }          
+                reader.readAsDataURL(this.currentArticle.tempImageFile);
+            },
+            // Push article changes to firestore
+            pushArticleChanges(){
+                var fileName = this.currentArticle.filePath.replace(`/pdf/${this.viewArticleType}/`, '');
 
-                    return this.$axios.post(`api/upload/image/${this.viewArticleType}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });                    
+                this.$fire.firestore.collection(this.viewArticleType).doc(fileName).update({
+                    title: this.currentArticle.title,
+                    subtitle: this.currentArticle.subtitle,
+                    thumbnailPath: this.currentArticle.thumbnailPath
                 })
                 .then((res) => {
-                    this.currentArticle.thumbnailPath = `/images/${this.viewArticleType}/${renamedImageFile.name}`;     
-                    
-                    this.pushArticleChanges();
+                    this.listFilesAsync();
                 })
                 .catch((err) => {
-                    console.log('Error during image replacement: ', err);
-                });
-        },
-        getPDFUrl(){
-            return this.currentArticle.filePath.replace('./static', '').replace('/pdf/', '/pdfs/');
-        },
-        handleImageUpload(){
-          this.currentArticle.tempImageFile = this.$refs.image.files[0];
-
-          console.log(this.currentArticle.tempImageFile);
-            
-          var reader = new FileReader();
-          reader.onload = (e) => {              
-            this.currentArticle.tempImagePath = e.target.result;
-          }          
-          reader.readAsDataURL(this.currentArticle.tempImageFile);
-        },
-        pushArticleChanges(){
-            var fileName = this.currentArticle.filePath.replace(`/pdf/${this.viewArticleType}/`, '');
-
-            this.$fire.firestore.collection(this.viewArticleType).doc(fileName).set({
-                title: this.currentArticle.title,
-                subtitle: this.currentArticle.subtitle,
-                thumbnailPath: this.currentArticle.thumbnailPath
-            })
-            .then((res) => {
-                console.log(res);
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-        },
-        listFilesAsync(){            
-            this.$fire.firestore.collection(this.viewArticleType).get()
-                .then((querySnapshot) => {
-                    this.pdfs = [];
-                    querySnapshot.forEach((doc) => {  
-                        if(doc.data().test === void 0){
-                            const item = doc.data();
-                            item["name"] = doc.id;
-
-                            this.pdfs.push(item);           
-                        }
-                    });
-                })
-                .catch(err => {
                     console.log(err);
-                });
-        },
-        deleteArticle(pdf){
-            console.log(pdf.id);
-        },
-        editArticle(pdf){
-            this.currentArticle.name = pdf.name;
-            this.currentArticle.title = pdf.title;
-            this.currentArticle.subtitle = pdf.subtitle;
-            this.currentArticle.thumbnailPath = pdf.thumbnailPath;
-            this.currentArticle.id = pdf.id;
-            this.currentArticle.type = this.viewArticleType;
-            
-            $('#exampleModal').modal('hide');
-        },
-        async viewArticle(file){                      
-            this.currentArticle.title = file.title;   
-            this.currentArticle.filePath = file.filePath;       
-            this.currentArticle.format = file.format;           
-            this.currentArticle.id = file.id;      
-            
-            if(file.format == 'md'){
-                const ext = '.' + file.format;
-                const contentPath = file.filePath.replace(ext, '');
-                this.currentArticle.content = await this.$content(contentPath).fetch();                
+                })
+            },
+            // Grabs docs by article type from firestore
+            listFilesAsync(){            
+                this.$fire.firestore.collection(this.viewArticleType).get()
+                    .then((querySnapshot) => {
+                        this.pdfs = [];
+                        querySnapshot.forEach((doc) => {  
+                            if(doc.data().test === void 0){
+                                const item = doc.data();
+                                // Add doc id as an additional object property
+                                item["name"] = doc.id;
+
+                                this.pdfs.push(item);           
+                            }
+                        });
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+            },
+            deleteArticle(pdf){
+                console.log(pdf.id);
+            },     
+            // date mark image and create new file from it   
+            renameImageBeforeSaving(){
+                if(this.currentArticle.tempImageFile){
+                    var image = this.currentArticle.tempImageFile;
+                    this.currentArticle.tempImageExt = this.currentArticle.tempImageFile.type.replace('image/', '');
+                    var ext = '.' + this.currentArticle.tempImageFile.type.replace('image/', '');            
+
+                    var newName = String(image.name).toLowerCase()
+                                        .replace(ext,'')
+                                        .concat('_', new Date().getTime().toString(), ext)
+                                        .replace(' ', '');                                                       
+
+                    var blob = image.slice(0, image.size, image.type);
+                    var newFile = new File([blob], newName, {type: image.type});
+                }
+                
+                return newFile || undefined;
             }
         },
-        renameImageBeforeSaving(){
-            if(this.currentArticle.tempImageFile){
-                var image = this.currentArticle.tempImageFile;
-                this.currentArticle.tempImageExt = this.currentArticle.tempImageFile.type.replace('image/', '');
-                var ext = '.' + this.currentArticle.tempImageFile.type.replace('image/', '');            
-
-                var newName = String(image.name).toLowerCase()
-                                    .replace(ext,'')
-                                    .concat('_', new Date().getTime().toString(), ext)
-                                    .replace(' ', '');                                                       
-
-                var blob = image.slice(0, image.size, image.type);
-                var newFile = new File([blob], newName, {type: image.type});
-            }
-            
-            return newFile || undefined;
+        mounted(){        
+            this.listFilesAsync();
         }
-    },
-    mounted(){        
-        this.listFilesAsync();
     }
-}
 </script>
 
 <style>
