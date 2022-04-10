@@ -40,7 +40,7 @@
                                 <td v-text="'manuscript'">Column content</td>                            
                                 <td><button type="button" @click="viewArticle(pdf)" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#ArticleModal">View</button></td>
                                 <td v-text="pdf.format">Column content</td>
-                                <td>
+                                <td v-if='pdf.format == "pdf"'>
                                     <span class='edit' @click='editArticle(pdf)' data-toggle="modal" data-target="#EditModal"><font-awesome-icon :icon="['fas', 'edit']"/></span>
                                     <span class='pl-1 pr-1'><strong>|</strong></span>
                                     <span class='delete' @click='deleteConfirmation(pdf)'><font-awesome-icon :icon="['fas', 'trash-alt']"/></span>
