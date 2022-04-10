@@ -8,6 +8,10 @@
     cursor: pointer;
 }
 
+body {
+    position: relative;
+}
+
 .section-header {
     display: inline-block;
     padding-top: 10px;

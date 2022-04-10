@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="container-fluid">
+      <LoadingGear></LoadingGear>
       <div class="row">
         <AdminSidebar/>
         <div class="col-10 mt-6">

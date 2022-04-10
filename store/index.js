@@ -1,3 +1,8 @@
+const state = () => ({
+    user: null,
+    loading: false
+});
+
 const actions = {    
     onAuthStateChangedAction: function (state, { authUser, claims }) {        
         if (!authUser) {
@@ -16,16 +21,18 @@ const actions = {
 const mutations = {
     SET_USER(state, user) {
         state.user = user
+    },
+    setLoadingStatus(state, status) {
+        state.loading = status;
     }
 }
 
-const state = () => ({
-    user: null
-});
-
 const getters = {
     getUser(state) {        
-        return state.user
+        return state.user;
+    },
+    getLoadingStatus(state) {
+        return state.loading;
     }
 }
 

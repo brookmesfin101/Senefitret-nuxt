@@ -232,14 +232,6 @@ app.post('/upload/test', (req, res) => {
     })
 });
 
-// app.post('/delete/image/:type/:name', (req, res) => {
-//     // try {
-//     //     fsPromises.unlink(`./static/images/`)
-//     // }
-//     console.log(req.params.type);
-//     console.log(req.params.name);    
-// });
-
 app.post('/delete/image', (req, res) => {
     var originalThumbnailPath = `./static${req.body.thumbnailPath}`;    
 
@@ -252,6 +244,20 @@ app.post('/delete/image', (req, res) => {
 
             res.json('Error during thumbnail deletion');
         });
+});
+
+app.post('/delete/pdf', (req, res) => {
+    var originalFilePath = req.body.filePath;
+
+    fsPromises.unlink(originalFilePath)
+        .then(() => {
+            res.json('PDF successfully deleted');
+        })
+        .catch((err) => {
+            console.log('Error within delete pdf function: ', err);
+
+            res.json('Error during pdf deletion');
+        })
 });
 
 app.post('/upload/image/:type', (req, res) => {

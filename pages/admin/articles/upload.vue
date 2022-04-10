@@ -8,6 +8,7 @@
         </div>        
         <div class="dashboard bg-white ml-4 pt-5 pl-5 pb-5">
             <!-- <button class='btn btn-primary' @click="testServerConnection">Test Connection</button> -->
+            <!-- <button class='btn btn-primary' @click='clearFile'>Clear File</button> -->
             <div class='row'>
                 <div class="col-6">
                     <div class="form-group">     
@@ -103,6 +104,10 @@ export default {
     },  
     methods: {
       handleFileUpload(){
+          this.isSuccess = true;
+          this.showConfirmation = false;
+          this.errorMessage = '';
+
           this.upload.file = this.$refs.file.files[0];
       },
       validateUploadEntries(upload){
@@ -121,7 +126,17 @@ export default {
           }          
           reader.readAsDataURL(this.upload.image);
       },
+      formatError(){
+          this.isSuccess = false;
+          this.showConfirmation = true;
+          this.errorMessage = 'Article must be PDF format.';
+      },
       submitFile(){
+          if(!this.upload?.file?.type.includes('pdf') ?? false){
+              this.formatError();
+              return;
+          }
+
           let formData = new FormData();                
                   
           var renamedFile = this.renameFileBeforeSaving();     
@@ -133,6 +148,7 @@ export default {
           this.upload.filePath = `/pdf/${this.upload.type}/${renamedFile.name}`;
           this.upload.imagePath = `/images/${this.upload.type}/${renamedImage.name}`;  
                                             
+          this.showLoadingIcon();
 
           this.$axios.post(`api/upload/${this.upload.type}`, formData,
             {
@@ -143,15 +159,11 @@ export default {
             ).then(() => {     
                 this.createDBEntry(renamedFile.name);
 
-                this.showConfirmation = true;
-                this.isSuccess = true;
-                setTimeout(() => {
-                    this.showConfirmation = false;
-                }, 2000)
+                
             })
             .catch((err) => {     
                 this.errorMessage = err.response.data.error;
-                console.log(this.errorMessage);
+                console.error(this.errorMessage);
                 this.showConfirmation = true;
                 this.isSuccess = false;
                 setTimeout(() => {
@@ -169,7 +181,15 @@ export default {
               filePath: this.upload.filePath
           })
           .then((res) => {
-              console.log(res);
+              const confirmation = () => {
+                  this.showConfirmation = true;
+                this.isSuccess = true;
+                setTimeout(() => {
+                    this.showConfirmation = false;
+                }, 2000);
+              };
+              
+              this.hideLoadingIcon(confirmation);
           })
           .catch((err) => {
               console.log(err);
@@ -207,6 +227,22 @@ export default {
             .catch((err) => {
                 console.log(err);
             })
+      },
+      hideLoadingIcon(func = null){
+        if(this.$store.getters.getLoadingStatus){
+            setTimeout(() => {
+                this.$store.commit('setLoadingStatus', false);
+                
+                if(func)
+                    func();
+            }, 1000);
+        }
+      },
+      showLoadingIcon(){
+          this.$store.commit('setLoadingStatus', true);
+      }, 
+      clearFile(){
+          this.$refs.file.value = null;
       }
     }
 }

@@ -21,16 +21,16 @@
             </div>
 
             <div class="row">
-                <div class="col-8">
+                <div class="col-9">
                     <table class="table table-hover">
                         <thead>
                             <tr>
                                 <th scope="col"></th>
-                                <th scope="col"><strong>Name</strong> of Article</th>
-                                <th scope="col"><strong>Type</strong> of Article</th>
-                                <th scope="col"><strong>View</strong> Article</th>
-                                <th scope="col">File Extension</th>
-                                <th scope="col">Edit/Delete</th>
+                                <th scope="col" style='width: 45%'><strong>Name</strong> of Article</th>
+                                <th scope="col" style='width: 15%'><strong>Type</strong> of Article</th>
+                                <th scope="col" style='width: 13%'><strong>View</strong> Article</th>
+                                <th scope="col" style='width: 13%'>File Extension</th>
+                                <th scope="col" style='width: 13%'>Edit/Delete</th>
                             </tr>                            
                         </thead>
                         <tbody>
@@ -43,7 +43,7 @@
                                 <td>
                                     <span class='edit' @click='editArticle(pdf)' data-toggle="modal" data-target="#EditModal"><font-awesome-icon :icon="['fas', 'edit']"/></span>
                                     <span class='pl-1 pr-1'><strong>|</strong></span>
-                                    <span class='delete' @click='deleteArticle(pdf)'><font-awesome-icon :icon="['fas', 'trash-alt']"/></span>
+                                    <span class='delete' @click='deleteConfirmation(pdf)'><font-awesome-icon :icon="['fas', 'trash-alt']"/></span>
                                 </td>
                             </tr>
                         </tbody>                        
@@ -71,7 +71,28 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>                    
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>                    
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Modal -->
+        <div class='modal fade' id='DeleteModal' tabindex="-1" role='dialog' aria-labeledby='deleteModalLabel' aria-hidden='true'>
+            <div class='modal-dialog modal-lg' role='document'>
+                <div class='modal-content'>
+                    <div class='modal-header'>
+                        <h5 class="modal-title" id="exampleModalLabel">Delete Confirmation</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>If you truly wish to delete the <em>({{currentArticle.title}})</em> article, please click the <strong>DELETE</strong> button otherwise click <strong>CANCEL</strong>.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" @click='deleteArticle'>Delete</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click='closeDeleteModal'>Cancel</button>                    
                     </div>
                 </div>
             </div>
@@ -88,6 +109,11 @@
                         </button>
                     </div>
                     <div class="modal-body">
+                        <transition name="upload">
+                            <div v-show="showConfirmationComputed" class="alert alert-success w-50 pt-4">                
+                                <p class='lead'>Article has been successfully updated.</p>
+                            </div>
+                        </transition>  
                         <div class='form-group'>
                             <label class='lead' for='ArticleTitle'>Title of Article</label>
                             <input type='text' name='ArticleTitle' v-model='currentArticle.title' class='form-control mt- w-50'>
@@ -107,7 +133,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-success" @click='updateArticle'>Save</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click='closeEditModal'>Close</button>                    
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click='closeEditModal'>Cancel</button>                    
                     </div>
                 </div>
             </div>
@@ -121,24 +147,36 @@
         data(){
             return {
                 pdfs : [],
+                showConfirmation: false,
                 currentArticle : {    
                     name: '',            
                     title: '',
+                    originalTitle: '',
                     content: '',
                     format: '',
                     filePath: '',
                     thumbnailPath: '',
                     subtitle: '',
+                    originalSubtitle: '',
                     type: '',
                     id: '',
                     tempImageFile: null,
                     tempImageExt: '',
                     tempImagePath: ''
                 },
+                currentArticleFormat: '',
                 viewArticleType: 'manuscripts'            
             }
         },
         computed: {
+            showConfirmationComputed: {
+                get(){
+                    return this.showConfirmation;
+                },
+                set(val){
+                    this.showConfirmation = val;
+                }
+            },
             thumbailPath(){
                 return this.currentArticle.tempImagePath || this.currentArticle.thumbnailPath;
             },
@@ -151,21 +189,47 @@
                 this.currentArticle.tempImageFile = null;
                 this.currentArticle.tempImagePath = '';
                 this.currentArticle.tempImageExt = '';
+                this.currentArticle.originalTitle = '';
+                this.currentArticle.originalSubtitle = '';                                
+            },
+            closeDeleteModal(){
+                this.currentArticle.tempImageFile = null;
+                this.currentArticle.tempImagePath = '';
+                this.currentArticle.tempImageExt = '';
+                this.currentArticle.originalTitle = '';
+                this.currentArticle.originalSubtitle = '';
             },
             editArticle(pdf){
-                // this.currentArticle.name = pdf.name;
+                this.currentArticle.name = pdf.name;
                 this.currentArticle.title = pdf.title;
                 this.currentArticle.subtitle = pdf.subtitle;
                 this.currentArticle.thumbnailPath = pdf.thumbnailPath;
                 this.currentArticle.id = pdf.id;
-                this.currentArticle.format = pdf.format;
+                this.currentArticle.filePath = pdf.filePath;
+                this.currentArticle.originalTitle = pdf.title;
+                this.currentArticle.originalSubtitle = pdf.subtitle;
 
                 this.currentArticle.type = this.viewArticleType;
                 
-                $('#exampleModal').modal('hide');
-            },
+                $('#DeleteModal').modal('hide');
+                $('#ArticleModal').modal('hide');
+            },            
+            // hide other modals and show delete confirmation window
+            deleteConfirmation(pdf){
+                $('#EditModal').modal('hide');
+                $('#ArticleModal').modal('hide');
+                
+                $('#DeleteModal').modal('show');
+
+                this.currentArticle.name = pdf.name;
+                this.currentArticle.title = pdf.title;
+                this.currentArticle.subtitle = pdf.subtitle;
+                this.currentArticle.thumbnailPath = pdf.thumbnailPath;
+                this.currentArticle.id = pdf.id;
+                this.currentArticle.filePath = pdf.filePath;      
+                this.currentArticleFormat = pdf.format;          
+            },  
             async viewArticle(file){        
-                console.log("View Article: " + file);
                 this.currentArticle.title = file.title;   
                 this.currentArticle.filePath = file.filePath;       
                 this.currentArticle.format = file.format;           
@@ -177,10 +241,35 @@
                     this.currentArticle.content = await this.$content(contentPath).fetch();                
                 }
             },
+            // begin article update process and then show confirmation alert if article was updated
             updateArticle(){
                 if(this.currentArticle.tempImagePath){
-                    this.updateImage();
+                    this.updateImage();                                        
+                } else if (this.currentArticle.originalSubtitle !== this.currentArticle.subtitle || this.currentArticle.originalTitle !== this.currentArticle.title) {
+                    this.updateTitles();
+                    this.showConfirmationComputed = true;
                 }
+                setTimeout(() => {
+                    this.showConfirmationComputed = false;
+                }, 4000);
+            },
+            // update artilce title and/or subtitle in firestore and then update pdf array
+            updateTitles() {
+                var fileName = this.currentArticle.filePath.replace(`/pdf/${this.viewArticleType}/`, '');
+
+                this.$fire.firestore.collection(this.viewArticleType).doc(fileName).update({
+                    title: this.currentArticle.title,
+                    subtitle: this.currentArticle.subtitle
+                })
+                .then((res) => {
+                    setTimeout(() => {
+                        this.showConfirmationComputed = false;
+                    }, 4000);
+                    this.listFilesAsync();
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
             },
             // renames newly uploaded image -> deletes old image -> uploads new image -> pushes naming and image changes to firestore
             updateImage(){
@@ -202,6 +291,49 @@
                         console.log('Error during image replacement: ', err);
                     });
             },
+            // perform multiple step article deletion process
+            deleteArticle(){
+                this.showLoadingIcon();
+
+                this.deleteImage().then(() => {      
+                    if(this.currentArticleFormat === 'pdf'){                        
+                        return this.deletePDF();                        
+                    }          
+                })
+                .then(() => {
+                    return this.pushArticleDeletion();
+                })
+                .then(() => {
+                    this.listFilesAsync();
+                    this.hideLoadingIcon();
+                    $('#DeleteModal').modal('hide');
+                })
+                .catch((err) => {
+                    console.log('Error during article deletion: ', err);
+                });                                         
+            },
+            // delete article from firestore database
+            pushArticleDeletion(){
+                return this.$fire.firestore.collection(this.viewArticleType).doc(this.currentArticle.name).delete();
+            },
+            // delete image from file system
+            deleteImage(){
+                return this.$axios.post('api/delete/image', { thumbnailPath: this.currentArticle.thumbnailPath });
+            },
+            // delete pdf from file system
+            deletePDF(){
+                var path = this.currentArticle.filePath;
+
+                if (!String(path).includes('./static/')){
+                    path = `./static/${path}`;
+                    if(!String(path).includes('pdfs')){
+                        path = String(path).replace('pdf', 'pdfs');
+                    }
+                }
+            
+                return this.$axios.post('api/delete/pdf', { filePath: path });
+            },
+            // format pdf url
             getPDFUrl(){
                 return this.currentArticle.filePath.replace('./static', '').replace('/pdf/', '/pdfs/');
             },
@@ -217,6 +349,7 @@
             },
             // Push article changes to firestore
             pushArticleChanges(){
+                this.showLoadingIcon();
                 var fileName = this.currentArticle.filePath.replace(`/pdf/${this.viewArticleType}/`, '');
 
                 this.$fire.firestore.collection(this.viewArticleType).doc(fileName).update({
@@ -225,11 +358,22 @@
                     thumbnailPath: this.currentArticle.thumbnailPath
                 })
                 .then((res) => {
+                    
+                    var confirmation = () => {
+                        this.showConfirmationComputed = true;
+                        
+                        setTimeout(() => {
+                            this.showConfirmationComputed = false;
+                        }, 3000);
+                    };
+
+                    this.hideLoadingIcon(confirmation);
+                    
                     this.listFilesAsync();
                 })
                 .catch((err) => {
                     console.log(err);
-                })
+                });
             },
             // Grabs docs by article type from firestore
             listFilesAsync(){            
@@ -245,14 +389,26 @@
                                 this.pdfs.push(item);           
                             }
                         });
+
+                        this.hideLoadingIcon();
                     })
                     .catch(err => {
                         console.log(err);
                     });
             },
-            deleteArticle(pdf){
-                console.log(pdf.id);
-            },     
+            hideLoadingIcon(func = null){
+                if(this.$store.getters.getLoadingStatus){
+                    setTimeout(() => {
+                        this.$store.commit('setLoadingStatus', false);
+                        
+                        if(func)
+                            func();
+                    }, 1000);
+                }
+            },
+            showLoadingIcon(){
+                this.$store.commit('setLoadingStatus', true);
+            },               
             // date mark image and create new file from it   
             renameImageBeforeSaving(){
                 if(this.currentArticle.tempImageFile){
@@ -274,11 +430,14 @@
         },
         mounted(){        
             this.listFilesAsync();
+        },
+        created(){
+            this.showLoadingIcon();
         }
     }
 </script>
 
-<style>
+<style scoped>
     .dashboard {        
         width: 95%;
         position: relative;
@@ -292,5 +451,15 @@
     }
     #Thumbnail_Preview > img {
         width: 35%;
+    }
+    .upload-enter-active, .upload-leave-active {
+        transition: opacity .5s;
+    }
+    .upload-enter, .upload-leave-to {
+        opacity: 0;
+    }
+    .alert.alert-success {
+        position: absolute;
+        left: 200px;
     }
 </style>
