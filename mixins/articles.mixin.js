@@ -23,13 +23,28 @@ export default {
                             this.articles.push(doc.data());                        
                         }
                     });
+                    this.hideLoadingIcon(null);
                 })
                 .catch(err => {
                     console.log(err);
                 });
+        },
+        showLoadingIcon(){
+            this.$store.commit('setLoadingStatus', true);
+        },
+        hideLoadingIcon(func = null){
+            if(this.$store.getters.getLoadingStatus){
+                setTimeout(() => {
+                    this.$store.commit('setLoadingStatus', false);
+                    
+                    if(func)
+                        func();
+                }, 1000);
+            }
         }
     },
     beforeMount(){
+        this.showLoadingIcon();
         this.listFilesAsync();
     }     
 }

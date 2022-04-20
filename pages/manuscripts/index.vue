@@ -4,7 +4,7 @@
         Manuscripts
       </p>
       <div class="articles-container row">
-        <RecentArticle v-for="(file, index) in articles" :key='index' :thumbnail="file.thumbnailPath" :title="file.title" :format="file.format" 
+        <RecentArticle v-for="(file, index) in articles" :key='index' :thumbnail="file.thumbnailPath" :title="file.title" :format="file.format" :size='"Medium"'
                         :subtitle="file.subtitle" v-on:openManuscript="openManuscript($event)"/>
       </div>
       <div class='text-secondary' v-if="articles.length <= 0">

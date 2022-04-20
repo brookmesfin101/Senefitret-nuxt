@@ -1,5 +1,5 @@
 <template>
-    <article class="">
+    <article class="pr-5">
         <nuxt-content :document="article"></nuxt-content>
     </article>
 </template>

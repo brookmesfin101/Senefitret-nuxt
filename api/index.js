@@ -3,7 +3,9 @@ const app = require('express')();
 const path = require('path');
 const cors = require('cors');
 const multer = require('multer');
+const nodemailer = require('nodemailer');
 const fs = require('fs');
+const { json } = require('body-parser');
 const fsPromises = fs.promises;
 
 app.use(bodyParser.json());
@@ -91,6 +93,53 @@ const getManuscript_MDs = async() => {
         console.log(err);
     }
 }
+
+const setUpNodeMailer = () => {
+    const authUser = 'senefitret@gmail.com';
+    const authPass = 'klamath9542!';
+    let transporter;
+
+    try {
+        transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true, // true for 465, false for other ports,            
+            auth: {
+              user: authUser, // generated ethereal user
+              pass: authPass // generated ethereal password
+            }
+          });
+    } catch (err) {
+        console.error(err);
+    }
+    
+    return transporter;
+}
+
+app.post('/contact/submit', (req, res) => {
+    
+    const from = req.body.from;
+    const email = req.body.email;
+    const subject = req.body.subject;
+    const body = req.body.emailBody;
+
+    try {
+        let transporter = setUpNodeMailer();
+    
+        // send mail with defined transport object
+        let info = transporter.sendMail({
+            from: `${from} - ${email}`, // sender address
+            to: "senefitret@gmail.com", // list of receivers
+            subject: subject, // Subject line
+            text: body // plain text body
+            // html: "<b>Hello world?</b>", // html body
+        });
+    } catch (err) {
+        console.error(err);
+    }
+    
+    return res.json('Success');
+});
 
 app.post('/upload/manuscripts', (req, res) => {
     upload(req, res, (err) => {
