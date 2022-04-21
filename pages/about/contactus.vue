@@ -22,12 +22,6 @@
                 <input type="text" v-model='email' class="form-control" id="from">
             </div>
           </div>
-          <div class="form-group row no-gutters">
-            <label for="subject" class="col-lg-2 col-form-label"><strong>Subject:</strong></label>
-            <div class="col-lg-6">
-                <input type="text" v-model='subject' class="form-control" id="subject">
-            </div>
-          </div>
           <div class="form-group">
             <label for="emailBody" class='pb-2'><strong>Message:</strong></label>
             <textarea class="form-control col-lg-8" v-model='emailBody' id="emailBody" rows="5"></textarea>
@@ -40,12 +34,13 @@
 </template>
 
 <script>
+const emailjs = require('@emailjs/browser');
+
 export default {
     data(){
         return {
             email: '',
-            from: '',
-            subject: '',
+            from: '',            
             emailBody: '',
             fieldsUnfilled: false,
             showConfirmation: false
@@ -61,25 +56,35 @@ export default {
     },
     methods: {
         validateFields(){
-            if(!this.email || !this.from || !this.subject || !this.emailBody){                
+            if(!this.email || !this.from || !this.emailBody){                
                 return false;
             } else {                
                 return true;
             }
         },
+        setupEmailTemplate(){
+            const templateParams = {
+                to_name: 'Senefitret',
+                from_name: this.from,
+                email_id: this.email,
+                message: this.emailBody
+            };
+
+            return templateParams;
+        },
         submit(){
             var valid = this.validateFields();
             if(valid){
                 this.fieldsUnfilled = false;
-                this.$axios.post('api/contact/submit', { from: this.from, subject: this.subject, emailBody: this.emailBody})
-                    .then(() => {
-                        this.showConfirmation = true;
-                        setTimeout(() => {
-                            this.showConfirmation = false;
-                        }, 3000);
+
+                const template = this.setupEmailTemplate();
+
+                emailjs.send('service_58dcw7a', 'template_oez78k4', template, '0v6DbfC90OFQghj4w')
+                    .then((response) => {
+                        console.log('SUCCESS!', response.status, response.text);                        
                     })
-                    .catch((err) => {
-                        console.error(err);
+                    .catch((error) => {
+                        console.log('FAILED...', error);                        
                     });
             } else {
                 this.fieldsUnfilled = true;
