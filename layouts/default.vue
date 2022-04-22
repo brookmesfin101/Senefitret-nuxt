@@ -28,7 +28,7 @@
           <li>
               <div class="form-inline mb-3">
                 <font-awesome-icon :icon="['fas', 'envelope']" style='color: white' class="main-icon fa-2x"/>
-                <p class="pb-0 mb-0 ml-3"><a href='/about/contactus'>tmesfin52@gmail.com</a></p>
+                <p class="pb-0 mb-0 ml-3"><a href='/about/contactus'>Click To Contact Us</a></p>
               </div>
               <hr class='mt-0 mb-0' style='color: white'>              
           </li>
