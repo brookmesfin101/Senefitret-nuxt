@@ -34,16 +34,21 @@
                             </tr>                            
                         </thead>
                         <tbody>
-                            <tr v-for="pdf in pdfs" :key="pdf.id">
+                            <tr v-for="article in articles" :key="article.id">
                                 <th scope="row"><font-awesome-icon :icon="['fas', 'file-pdf']" class="fa-fw"/></th>
-                                <td v-text="pdf.title">Column content</td>
+                                <td v-text="article.title">Column content</td>
                                 <td v-text="'manuscript'">Column content</td>                            
-                                <td><button type="button" @click="viewArticle(pdf)" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#ArticleModal">View</button></td>
-                                <td v-text="pdf.format">Column content</td>
-                                <td v-if='pdf.format == "pdf"'>
-                                    <span class='edit' @click='editArticle(pdf)' data-toggle="modal" data-target="#EditModal"><font-awesome-icon :icon="['fas', 'edit']"/></span>
+                                <td><button type="button" @click="viewArticle(article)" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#ArticleModal">View</button></td>
+                                <td v-text="article.format">Column content</td>
+                                <td v-if='article.format === "pdf"'>
+                                    <span class='edit' @click='editPDF(article)' data-toggle="modal" data-target="#EditModal"><font-awesome-icon :icon="['fas', 'edit']"/></span>
                                     <span class='pl-1 pr-1'><strong>|</strong></span>
-                                    <span class='delete' @click='deleteConfirmation(pdf)'><font-awesome-icon :icon="['fas', 'trash-alt']"/></span>
+                                    <span class='delete' @click='deleteConfirmation(article)'><font-awesome-icon :icon="['fas', 'trash-alt']"/></span>
+                                </td>
+                                <td v-if='article.format === "md"'>
+                                    <span class='edit' @click='editMD(article)' data-toggle="modal" data-target="#EditMDModal"><font-awesome-icon :icon="['fas', 'edit']"/></span>
+                                    <span class='pl-1 pr-1'><strong>|</strong></span>
+                                    <span class='delete' @click='deleteConfirmation(article)'><font-awesome-icon :icon="['fas', 'trash-alt']"/></span>
                                 </td>
                             </tr>
                         </tbody>                        
@@ -52,7 +57,7 @@
             </div>                    
         </div>
 
-        <!-- Articles Modal -->
+        <!-- View Articles Modal -->
         <div class="modal fade" id="ArticleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
@@ -67,7 +72,7 @@
                             <PDFDocument :url="getPDFUrl()" :scale="1" :key="currentArticle.title"/>                            
                         </div>
                         <div v-show="currentArticle && currentArticle.format == 'md'">
-                            <nuxt-content :document="currentArticle.content"/>
+                            <nuxt-content :document="currentArticle.nuxtContent"/>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -116,11 +121,11 @@
                         </transition>  
                         <div class='form-group'>
                             <label class='lead' for='ArticleTitle'>Title of Article</label>
-                            <input type='text' name='ArticleTitle' v-model='currentArticle.title' class='form-control mt- w-50'>
+                            <input type='text' name='ArticleTitle' v-model='currentArticle.title' class='form-control w-50'>
                         </div>
                         <div class='form-group'>
                             <label class='lead' for='ArticleSubtitle'>Subtitle of Article</label>
-                            <input type='text' name='ArticleSubtitle' v-model='currentArticle.subtitle' class='form-control mt- w-100'>
+                            <input type='text' name='ArticleSubtitle' v-model='currentArticle.subtitle' class='form-control w-100'>
                         </div>
                         <div class='form-group'>
                         <label class='pr-4 lead'>Article Image Thumbnail</label>
@@ -138,21 +143,80 @@
                 </div>
             </div>
         </div>
+
+        <!-- Edit MD Modal -->
+        <div class="modal fade" id="EditMDModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xxl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">{{currentArticle.title}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <transition name="upload">
+                            <div v-show="showConfirmationComputed" class="alert alert-success w-50 pt-4">                
+                                <p class='lead'>Article has been successfully updated.</p>
+                            </div>
+                        </transition>  
+                        <div class='row'>
+                            <div class='col-sm-6'>
+                                <div class='form-group'>
+                                    <label class='lead' for='ArticleTitle'>Title of Article</label>
+                                    <input type='text' name='ArticleTitle' v-model='currentArticle.title' class='form-control w-50'>
+                                </div>
+                                <div class='form-group'>
+                                    <label class='lead' for='ArticleSubtitle'>Subtitle of Article</label>
+                                    <input type='text' name='ArticleSubtitle' v-model='currentArticle.subtitle' class='form-control w-100'>
+                                </div>
+                            </div>
+                            <div class='col-sm-3'>
+                                <div class='form-group'>
+                                <label class='pr-4 lead'>Article Image Thumbnail</label>
+                                    <p>Image file must be a PNG, JPG, JPEG or GIF format</p>
+                                    <input class="form-control mt-1" type="file" ref="image" id="image" v-on:change="handleImageUpload()">     
+                                </div>
+                            </div>
+                            <div class='col-sm-3'>
+                                <div id='Thumbnail_Preview' class='mt-4'>
+                                    <img :src='thumbailPath'>
+                                </div> 
+                            </div>
+                        </div>
+                        <div class='row no-gutters'>
+                            <tip-tap @input='tiptapContent' :value='currentArticle.content'></tip-tap>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" @click='updateArticle'>Save</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click='closeEditModal'>Cancel</button>                    
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>  
 </template>
 
 <script>
+import TipTap from '../../../components/TipTap.vue';
+
     export default {
         layout: 'admin',
+        components: {
+            TipTap
+        },
         data(){
             return {
-                pdfs : [],
+                articles : [],
                 showConfirmation: false,
                 currentArticle : {    
                     name: '',            
                     title: '',
                     originalTitle: '',
                     content: '',
+                    nuxtContent: '',
+                    updatedContent: '',
                     format: '',
                     filePath: '',
                     thumbnailPath: '',
@@ -185,6 +249,9 @@
             }
         },
         methods: {
+            tiptapContent(content){
+                this.currentArticle.updatedContent = content;
+            },
             closeEditModal(){
                 this.currentArticle.tempImageFile = null;
                 this.currentArticle.tempImagePath = '';
@@ -199,36 +266,64 @@
                 this.currentArticle.originalTitle = '';
                 this.currentArticle.originalSubtitle = '';
             },
-            editArticle(pdf){
-                this.currentArticle.name = pdf.name;
-                this.currentArticle.title = pdf.title;
-                this.currentArticle.subtitle = pdf.subtitle;
-                this.currentArticle.thumbnailPath = pdf.thumbnailPath;
-                this.currentArticle.id = pdf.id;
-                this.currentArticle.filePath = pdf.filePath;
-                this.currentArticle.originalTitle = pdf.title;
-                this.currentArticle.originalSubtitle = pdf.subtitle;
+            // edit pdf file
+            editPDF(article){
+                this.currentArticle.name = article.name;
+                this.currentArticle.title = article.title;
+                this.currentArticle.subtitle = article.subtitle;
+                this.currentArticle.thumbnailPath = article.thumbnailPath;
+                this.currentArticle.id = article.id;
+                this.currentArticle.filePath = article.filePath;
+                this.currentArticle.originalTitle = article.title;
+                this.currentArticle.originalSubtitle = article.subtitle;
 
                 this.currentArticle.type = this.viewArticleType;
                 
                 $('#DeleteModal').modal('hide');
-                $('#ArticleModal').modal('hide');
-            },            
+                $('#ArticleModal').modal('hide');                       
+            },     
+            // edit markdown file
+            editMD(article){
+                this.currentArticle.name = article.name;
+                this.currentArticle.title = article.title;
+                this.currentArticle.subtitle = article.subtitle;
+                this.currentArticle.thumbnailPath = article.thumbnailPath;
+                this.currentArticle.id = article.id;
+                this.currentArticle.filePath = article.filePath;
+                this.currentArticle.originalTitle = article.title;
+                this.currentArticle.originalSubtitle = article.subtitle;
+
+                this.currentArticle.type = this.viewArticleType;                 
+
+                const title = this.currentArticle.filePath.match(/(?<=\/)(.*)(?=.md)/)[0];
+
+                this.$axios.get(`api/article/md/content/${title}/${this.currentArticle.type}`)
+                    .then((res) => {                        
+                        this.currentArticle.content = res.data.content;
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                    });
+                
+                $('#DeleteModal').modal('hide');
+                $('#ArticleModal').modal('hide');   
+            },
             // hide other modals and show delete confirmation window
-            deleteConfirmation(pdf){
+            deleteConfirmation(article){
                 $('#EditModal').modal('hide');
                 $('#ArticleModal').modal('hide');
                 
                 $('#DeleteModal').modal('show');
 
-                this.currentArticle.name = pdf.name;
-                this.currentArticle.title = pdf.title;
-                this.currentArticle.subtitle = pdf.subtitle;
-                this.currentArticle.thumbnailPath = pdf.thumbnailPath;
-                this.currentArticle.id = pdf.id;
-                this.currentArticle.filePath = pdf.filePath;      
-                this.currentArticleFormat = pdf.format;          
+                this.currentArticle.name = article.name;
+                this.currentArticle.title = article.title;
+                this.currentArticle.subtitle = article.subtitle;
+                this.currentArticle.thumbnailPath = article.thumbnailPath;
+                this.currentArticle.id = article.id;
+                this.currentArticle.filePath = article.filePath;      
+                this.currentArticleFormat = article.format;          
             },  
+            // view article
             async viewArticle(file){        
                 this.currentArticle.title = file.title;   
                 this.currentArticle.filePath = file.filePath;       
@@ -238,7 +333,7 @@
                 if(file.format == 'md'){
                     const ext = '.' + file.format;
                     const contentPath = file.filePath.replace(ext, '');
-                    this.currentArticle.content = await this.$content(contentPath).fetch();                
+                    this.currentArticle.nuxtContent = await this.$content(contentPath).fetch();                
                 }
             },
             // begin article update process and then show confirmation alert if article was updated
@@ -248,18 +343,36 @@
                 } else if (this.currentArticle.originalSubtitle !== this.currentArticle.subtitle || this.currentArticle.originalTitle !== this.currentArticle.title) {
                     this.updateTitles();
                     this.showConfirmationComputed = true;
+
+                    setTimeout(() => {
+                        this.showConfirmationComputed = false;
+                    }, 4000);
+                } else if (this.currentArticle.updatedContent != this.currentArticle.content){
+                    const title = this.currentArticle.filePath.match(/(?<=\/)(.*)(?=.md)/)[0];
+
+                    this.$axios.post(`api/article/md/content/${title}/${this.currentArticle.type}`, {content: this.currentArticle.updatedContent})
+                        .then(() => {
+                            this.showConfirmationComputed = true;
+
+                            setTimeout(() => {
+                                this.showConfirmationComputed = false;
+                            }, 4000);
+                        })
+                        .catch((err) => {
+                            console.error(err);
+                        });
                 }
-                setTimeout(() => {
-                    this.showConfirmationComputed = false;
-                }, 4000);
             },
-            // update artilce title and/or subtitle in firestore and then update pdf array
+            // update article title and/or subtitle in firestore and then update pdf array
             updateTitles() {
-                var fileName = this.currentArticle.filePath.replace(`/pdf/${this.viewArticleType}/`, '');
+                const fileName = this.currentArticle.filePath.replace(`/pdf/${this.viewArticleType}/`, '').replace(`${this.viewArticleType}/`, '');
 
                 this.$fire.firestore.collection(this.viewArticleType).doc(fileName).update({
                     title: this.currentArticle.title,
                     subtitle: this.currentArticle.subtitle
+                })
+                .then(() => {
+                    return this.updateMDContent();
                 })
                 .then((res) => {
                     setTimeout(() => {
@@ -298,7 +411,9 @@
                 this.deleteImage().then(() => {      
                     if(this.currentArticleFormat === 'pdf'){                        
                         return this.deletePDF();                        
-                    }          
+                    } else if(this.currentArticleFormat === 'md'){
+                        return this.deleteMD();
+                    }   
                 })
                 .then(() => {
                     return this.pushArticleDeletion();
@@ -319,6 +434,12 @@
             // delete image from file system
             deleteImage(){
                 return this.$axios.post('api/delete/image', { thumbnailPath: this.currentArticle.thumbnailPath });
+            },
+            // delete md from file system
+            deleteMD(){
+                const title = this.currentArticle.filePath.match(/(?<=\/)(.*)/)[0];
+
+                return this.$axios.post('api/delete/md', { title, type: this.viewArticleType});
             },
             // delete pdf from file system
             deletePDF(){
@@ -347,18 +468,29 @@
                 }          
                 reader.readAsDataURL(this.currentArticle.tempImageFile);
             },
+            updateMDContent(){
+                const title = this.currentArticle.filePath.match(/(?<=\/)(.*)(?=.md)/)[0];
+
+                if(this.currentArticle.updatedContent != this.currentArticle.content){
+                    return this.$axios.post(`api/article/md/content/${title}/${this.currentArticle.type}`, {content: this.currentArticle.updatedContent});
+                } else {
+                    return Promise.resolve();
+                }
+            },
             // Push article changes to firestore
             pushArticleChanges(){
                 this.showLoadingIcon();
-                var fileName = this.currentArticle.filePath.replace(`/pdf/${this.viewArticleType}/`, '');
+                const fileName = this.currentArticle.filePath.replace(`/pdf/${this.viewArticleType}/`, '').replace(`${this.viewArticleType}/`, '');
 
                 this.$fire.firestore.collection(this.viewArticleType).doc(fileName).update({
                     title: this.currentArticle.title,
                     subtitle: this.currentArticle.subtitle,
                     thumbnailPath: this.currentArticle.thumbnailPath
                 })
-                .then((res) => {
-                    
+                .then(() => {
+                    return this.updateMDContent();
+                })
+                .then((res) => {                    
                     var confirmation = () => {
                         this.showConfirmationComputed = true;
                         
@@ -379,14 +511,14 @@
             listFilesAsync(){            
                 this.$fire.firestore.collection(this.viewArticleType).get()
                     .then((querySnapshot) => {
-                        this.pdfs = [];
+                        this.articles = [];
                         querySnapshot.forEach((doc) => {  
                             if(doc.data().test === void 0){
                                 const item = doc.data();
                                 // Add doc id as an additional object property
                                 item["name"] = doc.id;
 
-                                this.pdfs.push(item);           
+                                this.articles.push(item);           
                             }
                         });
 
@@ -460,6 +592,7 @@
     }
     .alert.alert-success {
         position: absolute;
+        z-index: 10;
         left: 200px;
     }
 </style>

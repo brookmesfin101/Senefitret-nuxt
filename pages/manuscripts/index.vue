@@ -5,7 +5,7 @@
       </p>
       <div class="articles-container row">
         <RecentArticle v-for="(file, index) in articles" :key='index' :thumbnail="file.thumbnailPath" :title="file.title" :format="file.format" :size='"Medium"'
-                        :subtitle="file.subtitle" v-on:openManuscript="openManuscript($event)"/>
+                        :subtitle="file.subtitle" v-on:openManuscript="openManuscript($event, file)"/>
       </div>
       <div class='text-secondary' v-if="articles.length <= 0">
         <h3>No Articles have been added to this page yet.</h3>

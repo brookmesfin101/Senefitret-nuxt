@@ -77,7 +77,7 @@ export default {
     browserBaseURL: "/"
   },
   env: {
-    DEV : false,
+    DEV : true,
     EMAILJS_PUBLIC_KEY : '0v6DbfC90OFQghj4w',
     EMAILJS_GMAIL_SERVICEID : 'service_58dcw7a',
     EMAILJS_GMAIL_TEMPLATEID : 'template_oez78k4' 

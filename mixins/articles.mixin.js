@@ -7,11 +7,11 @@ export default {
     methods: {
         openManuscript(e, file) {                    
             if(e.format == "md"){
-                window.location = window.location.href + "/md/" + e.title; 
-            } else if(e.format == "pdf"){
-                const fileName = file.filePath.replace(`/pdf/${this.$route.name}/`, '').replace('.pdf', '');
+                const title = file.filePath.match(/(?<=\/)(.*)(?=.md)/)[0];
 
-                window.location = window.location.href + "/pdf/" + fileName; 
+                window.location = window.location.href + "/md/" + title; 
+            } else if(e.format == "pdf"){
+                window.location = window.location.href + "/pdf/" + e.title; 
             }                                 
         },
         listFilesAsync(){            

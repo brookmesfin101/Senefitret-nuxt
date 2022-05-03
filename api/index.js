@@ -264,8 +264,22 @@ app.post('/delete/pdf', (req, res) => {
         })
 });
 
-app.post('/upload/image/:type', (req, res) => {
-    console.log('within upload image, before upload, type: ', req.params.type);
+app.post('/delete/md', (req, res) => {
+    const title = req.body.title;
+    const type = req.body.type;
+
+    fsPromises.unlink(`./content/${type}/${title}`)
+        .then(() => {
+            res.status(200).json('MD successfully deleted');
+        })
+        .catch((err) => {
+            console.log('Error within delete md function: ', err);
+
+            res.status(422).json('Error during pdf deletion');
+        })
+})
+
+app.post('/upload/image/:type', (req, res) => {    
     uploadImage(req, res, (err) => {
         if(err !== void 0){
             console.log('Error uploading new image');
@@ -276,6 +290,68 @@ app.post('/upload/image/:type', (req, res) => {
             res.json('Success uploaded new thumbnail');
         }
     });
+});
+
+app.post('/upload/article', (req, res) => {
+    var path = req.body.articlePath;
+    var content = req.body.articleContent;
+
+    console.log(path);
+    console.log(content);
+
+    fsPromises.writeFile(path, content)
+        .then(() => {
+            console.log(`${path} file created`);
+            res.status(200).json('Article successfully created.');
+        })
+        .catch((err) => {
+            res.status(422).json({ error: err});
+        });
+});
+
+app.post('/article/md/content', (req, res) => {
+    const title = req.body.title;
+    const type = req.body.type;
+
+    fsPromises.readFile(`./content/${type}/${title}.md`)
+        .then((data) => {
+            const content = data.toString();
+
+            res.status(200).json({content});
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+});
+
+app.get('/article/md/content/:title/:type', (req, res) => {
+    const title = req.params.title;
+    const type = req.params.type;
+
+    fsPromises.readFile(`./content/${type}/${title}.md`)
+        .then((data) => {
+            const content = data.toString();
+
+            res.status(200).json({content});
+        })
+        .catch((err) => {
+            console.log(err);
+        });    
+});
+
+app.post('/article/md/content/:title/:type', (req, res) => {
+    const title = req.params.title;
+    const type = req.params.type;
+    const content = req.body.content; 
+
+    fsPromises.writeFile(`./content/${type}/${title}.md`, content)
+        .then(() => {
+            console.log(`${path} file updated`);
+            res.status(200).json('Article successfully updated.');
+        })
+        .catch((err) => {
+            res.status(422).json({ error: err});
+        });
 });
 
 app.get('/test/connection', (req, res) => {

@@ -24,7 +24,7 @@
                             <font-awesome-icon :icon="['fas', 'eye']" class="admin-nav-icon fa-fw fa-xs mr-2 ml-4"/> 
                             <a href="/admin/articles" :class="{'text-light' : path != 'articles'}"><small>View Articles</small></a>
                         </li>
-                        <li v-show="false">
+                        <li v-show="true">
                             <font-awesome-icon :icon="['fas', 'edit']" class="admin-nav-icon fa-fw fa-xs mr-2 ml-4"/> 
                             <a href="/admin/articles/write" :class="{'text-light' : path != 'articles/write'}"><small>Write Article</small></a>
                         </li>
@@ -54,7 +54,6 @@ export default {
     mounted() {
         var path = String($nuxt.$route.path).replace('/admin/', '').replace('/admin', '');
         this.path = path == '' ? 'dashboard' : String(path).toLowerCase();        
-        console.log(this.path);
     }
 }
 </script>
