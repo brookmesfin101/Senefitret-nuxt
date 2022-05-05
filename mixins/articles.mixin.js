@@ -11,7 +11,9 @@ export default {
 
                 window.location = window.location.href + "/md/" + title; 
             } else if(e.format == "pdf"){
-                window.location = window.location.href + "/pdf/" + e.title; 
+                const title = file.filePath.match(/(?<=\/)(.*)(?=.pdf)/)[0];
+                
+                window.location = window.location.href + "/pdf/" + title; 
             }                                 
         },
         listFilesAsync(){            
