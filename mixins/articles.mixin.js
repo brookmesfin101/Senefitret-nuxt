@@ -5,13 +5,14 @@ export default {
         };
     },
     methods: {
-        openManuscript(e, file) {                    
+        openManuscript(e, file) {                           
             if(e.format == "md"){
                 const title = file.filePath.match(/(?<=\/)(.*)(?=.md)/)[0];
 
                 window.location = window.location.href + "/md/" + title; 
             } else if(e.format == "pdf"){
-                const title = file.filePath.match(/(?<=\/)(.*)(?=.pdf)/)[0];
+                const title = file.filePath.replace('/pdf/', '').replace('./static/pdfs/').replace('biologicalsciences', '').replace('history', '')
+                .replace('culture', '').replace('sciencesociety', '').replace('religionscience', '').replace('manuscripts', '').match(/(?<=\/)(.*)(?=.pdf)/)[0];                
                 
                 window.location = window.location.href + "/pdf/" + title; 
             }                                 

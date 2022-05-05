@@ -6,7 +6,7 @@
 
 <script>
 export default {
-    async asyncData({ $content, params }) {               
+    async asyncData({ $content, params }) {            
         const url = `/pdfs/biologicalsciences/${params.slug}.pdf`;        
 
         return { url }
