@@ -5,7 +5,7 @@
         Mission Statement:
       </h4>
       <p class="mt-3">
-        The purpose of this site is to serves as a learning platform for young adults mainly living and working outside of Ethiopia and who want to gain knowledge in works related to biological sciences in Ethiopia. It aims at introducing what was done in the past, and what is also being done now, with major focus on botanical sciences. As far as possible manuscripts will be both in English and Amharic.  
+        The purpose of this site is manyfold: 1) to serve as a learning platform for beginners and young adults who would like to further their comprehension skills in biology; 2) to add to the knowledge base of the reader in particularly plant biology; 3) to provide notes on various subjects in biology including human biology; 4) to relates works done in the past, particularly in Ethiopia, with major focus placed on botanical sciences; and 5) to serve as a reference point for topics in plant biology. Topics outside of the above subjects will also be addressed under the various headings. As far as possible manuscripts will be both in English and Amharic.
       </p>  
       <button class="btn btn-outline-danger mt-2 mb-2" @click='learnMore'>Learn More</button>
       <hr/>
