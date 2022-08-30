@@ -4,7 +4,7 @@
     About
   </h4>
   <p>
-    This site is created by Mesfin Tadesse, a biologist who has taught and researched on biological issues in East Africa and in Columbus, Ohio. Mesfin taught courses at Addis Ababa University, Columbus State Community College and The Ohio State University. See … (for publications).
+    This site is created by Dr. Mesfin Tadesse, a professor of plant biology who has taught and researched on plant biology and taxonomy in East Africa (Ethiopia and Kenya) and in Columbus, Ohio, U.S.A. He taught courses at Addis Ababa University, The Ohio State University and Columbus State Community College.
   </p>
 </div>  
 </template>
